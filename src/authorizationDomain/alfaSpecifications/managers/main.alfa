@@ -1,0 +1,13 @@
+namespace managers {
+advice responseAdvice = "responseAdvice"
+    policy Main {
+        target
+            clause user.role == "manager"
+        apply firstApplicable
+
+        rule {
+             permit
+             on permit { advice responseAdvice  { acme.adviceText  = "Permit since user is manager" } }
+        }
+    }
+}

@@ -1,0 +1,3 @@
+user.role:
+  timeToLive: 1 day
+  maxItems: 1000

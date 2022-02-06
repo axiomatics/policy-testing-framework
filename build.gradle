@@ -1,0 +1,45 @@
+plugins {
+    id 'alfa-testing-framework'
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+version = '1.0'
+group = 'com.myorg.alfa'
+
+alfa {
+    mainpolicy = "acme.Main"
+    licenseFile = "license/axiomatics_PDP.license"
+}
+dependencies {
+}
+
+test {
+    environment "LDAP_PIP_URL", "http://ldap-dev.myorg.com"
+}
+
+task test_LocalEnv(type: Test) {
+    group "verification"
+    environment "ALFA_TEST_REMOTE_URL", "http://127.0.0.1:8081/authorize"
+    environment "ALFA_TEST_REMOTE_USER", "pdp-user"
+    environment "ALFA_TEST_REMOTE_PASSWORD", "secret"
+}
+
+task test_DevEnv(type: Test) {
+    group "verification"
+    environment "ALFA_TEST_REMOTE_URL", "http://ads-dev.myorg.com/authorize"
+    environment "ALFA_TEST_REMOTE_USER", "pdp-user"
+    environment "ALFA_TEST_REMOTE_PASSWORD", "secret"
+}
+
+task test_ProductionEnv(type: Test) {
+    group "verification"
+    environment "ALFA_TEST_REMOTE_URL", "http://ads.myorg.com/authorize"
+    environment "ALFA_TEST_REMOTE_USER", "pdp-user"
+    environment "ALFA_TEST_REMOTE_PASSWORD", "secret"
+    environment "ALFA_TEST_REMOTE_HEADER", "headers.json"
+    environment "LDAP_PIP_URL", "http://ldap-dev.myorg.com"
+}
