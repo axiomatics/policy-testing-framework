@@ -14,7 +14,7 @@ repositories {
             secretKey = System.env.AXIOMATICS_SECRET_ACCESS_KEY ?: project.findProperty('AXIOMATICS_SECRET_ACCESS_KEY')
         }
     }
-    mavenLocal()
+    //mavenLocal()
 }
 
 
