@@ -17,7 +17,6 @@ repositories {
     //mavenLocal()
 }
 
-
 configurations {
     domTool
     alfac
@@ -146,7 +145,6 @@ task runAds(type: JavaExec) {
     }
 }
 
-
 buildAuthzDomain.dependsOn compileAlfa
 runAds.dependsOn buildAuthzDomain
 runAds.dependsOn stageDeploymentDescriptor
@@ -169,7 +167,8 @@ class AlfaPlugin implements Plugin<Project> {
                 accessKey.equals("Put the key id provided by Axiomatics here!") ||
                         secretKey.equals("Put the secret key provided by Axiomatics here!")
         ) {
-            throw new GradleException("Credential to Axiomatics repository not set. Please set credentials provided by Axiomatics in file gradle.properties or as environment variables.")
+            throw new GradleException("Credential to Axiomatics repository not set. Please set credentials provided by Axiomatics in file gradle.properties or as environment variables. " +
+                    "If you have not received the credentials, contact your Axiomatics support")
         }
         project.extensions.create('alfa', AlfaExtension)
         project.plugins.apply('java')
@@ -232,5 +231,4 @@ class MyLogger extends ByteArrayOutputStream {
         reset();
     }
 }
-
 
