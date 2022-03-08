@@ -8,7 +8,7 @@ def myErrOut = new ByteArrayOutputStream();
 repositories {
     mavenCentral()
     maven {
-        url "s3://axiomatics-cr-maven/snapshot"
+        url "s3://axiomatics-cr-maven/release"
         credentials(AwsCredentials) {
             accessKey = System.env.AXIOMATICS_ACCESS_KEY_ID ?: project.findProperty('AXIOMATICS_ACCESS_KEY_ID')
             secretKey = System.env.AXIOMATICS_SECRET_ACCESS_KEY ?: project.findProperty('AXIOMATICS_SECRET_ACCESS_KEY')
@@ -45,9 +45,9 @@ task compileAlfa(type: JavaExec) {
     outputs.files fileTree("${buildDir}/alfa/domain/xacmlSpecifications")
     doFirst {
         project.delete( fileTree("${buildDir}/alfa/domain/xacmlSpecifications/"))
-        def inputDir = inputs.properties.srcDir
+        def inputDir = "${projectDir}/${project.extensions.alfa.srcDir}"
         if (!new File(inputDir).isDirectory()) {
-            throw new GradleException("alfa.srcDir is not set or does not exist: ${inputDir}")
+            throw new GradleException("alfa.srcDir is not set or does not exist: ${new File(inputDir).getAbsolutePath()}")
         }
         myErrOut = new MyLogger();
         errorOutput myErrOut
@@ -69,7 +69,7 @@ task compileAlfaToPackage(type: JavaExec) {
 
         def dir = "${projectDir}/${project.extensions.alfa.srcDir}"
         if (!new File(dir).isDirectory()) {
-            throw new GradleException("alfa.srcDir is not set or does not exist: ${dir}")
+            throw new GradleException("alfa.srcDir is not set or does not exist: ${new File(dir).getAbsolutePath()}")
         }
         myErrOut = new MyLogger();
         errorOutput myErrOut
@@ -115,9 +115,9 @@ task stageDeploymentDescriptor(type: Copy) {
 
 task stageLicenseFile {
     doFirst {
-        def srcFile = inputs.properties.srcFile
+        def srcFile ="${projectDir}/${project.extensions.alfa.licenseFile}"
         if (srcFile == null)  throw new GradleException("Specify alfa.licenseFile");
-        if (! new File(srcFile).canRead())  throw new GradleException("Can not read license file at ${srcFile}");
+        if (! new File(srcFile).canRead())  throw new GradleException("Can not read license file at ${new File(srcFile).getAbsolutePath()}");
     }
     doLast {
         boolean ok = project.copy {
@@ -144,11 +144,15 @@ task runAds(type: JavaExec) {
         println myErrOut.flush()
     }
 }
+task stageAdsFiles {
+    group = "axiomatics"
+}
 
 buildAuthzDomain.dependsOn compileAlfa
-runAds.dependsOn buildAuthzDomain
-runAds.dependsOn stageDeploymentDescriptor
-runAds.dependsOn stageLicenseFile
+stageAdsFiles.dependsOn buildAuthzDomain
+stageAdsFiles.dependsOn stageDeploymentDescriptor
+stageAdsFiles.dependsOn stageLicenseFile
+runAds.dependsOn stageAdsFiles
 
 rootProject.plugins.apply(AlfaPlugin)
 

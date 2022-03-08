@@ -447,43 +447,53 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel1">
 <li><a href="#_introduction">Introduction</a></li>
 <li><a href="#_changelog">Changelog</a></li>
-<li><a href="#_javadocs">Javadocs</a></li>
-<li><a href="#_requirements">Requirements</a></li>
+<li><a href="#_support">Support</a></li>
+<li><a href="#JavaReq">Java Requirement</a></li>
 <li><a href="#_prerequisites">Prerequisites</a></li>
-<li><a href="#_alfa_quick_start_with_sample_project_visual_studio_code_and_gradle">ALFA quick start with sample project, Visual Studio Code and Gradle</a>
+<li><a href="#_project_structure">Project structure</a>
 <ul class="sectlevel2">
-<li><a href="#_sample_project">Sample project</a></li>
-</ul>
-</li>
-<li><a href="#_sending_requests">Sending requests</a>
-<ul class="sectlevel2">
-<li><a href="#_runtime_libraries">Runtime libraries</a></li>
+<li><a href="#_load_project_in_visual_studio_code">Load project in Visual Studio Code</a></li>
 </ul>
 </li>
 <li><a href="#_authorization_domain_v2_directory_layout_convention">Authorization domain V2 directory layout convention</a></li>
 <li><a href="#_using_the_alfa_test_framework">Using the ALFA Test framework</a>
 <ul class="sectlevel2">
+<li><a href="#_creating_attributes">Creating attributes</a></li>
+<li><a href="#_creating_attribute_connectors">Creating attribute connectors</a></li>
+<li><a href="#_creating_tests">Creating tests</a></li>
+<li><a href="#_creating_policies">Creating policies</a></li>
 <li><a href="#_testing_alfa_policies">Testing ALFA policies</a></li>
 <li><a href="#_testing_obligations_and_advice">Testing Obligations and Advice</a></li>
 <li><a href="#_running_test_against_a_remote_service">Running test against a remote service</a></li>
+<li><a href="#_variable_substitution">Variable substitution</a></li>
 </ul>
 </li>
-<li><a href="#_variable_substitution">Variable substitution</a></li>
-<li><a href="#_gradle">Gradle</a></li>
+<li><a href="#Gradle">Gradle</a>
+<ul class="sectlevel2">
 <li><a href="#GradleConfiguration">Configuration</a></li>
+<li><a href="#_tasks">Tasks</a></li>
+<li><a href="#_dependency_configurations">Dependency configurations</a></li>
+</ul>
+</li>
 <li><a href="#_debugging">Debugging</a>
 <ul class="sectlevel2">
-<li><a href="#_request_and_responses">Request and responses</a></li>
+<li><a href="#RequestAndResponse">Request and responses</a></li>
 <li><a href="#_tracing">Tracing</a></li>
 </ul>
 </li>
-<li><a href="#_debug">Debug</a></li>
+<li><a href="#_peps_and_sending_requests">PEPs and sending requests</a>
+<ul class="sectlevel2">
+<li><a href="#_curl_with_json_body">Curl with JSON body</a></li>
+<li><a href="#_openapi">OpenAPI</a></li>
+<li><a href="#_sample_ava_pep_implementation">Sample ava PEP implementation</a></li>
+<li><a href="#_reference_documentation">Reference documentation</a></li>
+</ul>
+</li>
 <li><a href="#_running_ads">Running ADS</a>
 <ul class="sectlevel2">
 <li><a href="#_license">License</a></li>
 </ul>
 </li>
-<li><a href="#_docker">Docker</a></li>
 <li><a href="#_reference_and_further_documentation">Reference and further documentation</a></li>
 </ul>
 </div>
@@ -493,25 +503,28 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h2 id="_introduction">Introduction</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>ALFA Testing Framework is a JUnit extension and Gradle plugin to test and develop ALFA policies and attribute connectors.
-It can also be used to test a remote decision service (such as Axiomatics PDP or ADS). An example Gradle project exists in the <em>project</em> folder that shows how Gradle can be used to execute tests and build the authorization domain.</p>
+<p>ALFA Testing Framework tool is a Gradle project and JUnit4 extension to develop and test ALFA policies, attribute connectors (PIPs) and your whole authorization/Attribute Based Access Control domain</p>
 </div>
 <div class="paragraph">
-<p><a href="https://docs.gradle.org/current/userguide/what_is_gradle.html">Gradle</a> is a build automation tool that integrates well with software development tools like Jenkins and Maven.</p>
+<p>An ALFA project can be a fundamental part in achieving DevOps and a CI/CD pipeline of ALFA and Attribute Based Access Control (ABAC) and can be integrated into your organizations available build tools (such as Jenkins, Azure DevOps or OpenShift).</p>
 </div>
 <div class="paragraph">
-<p>Gradle and the ALFA testing framework can be an essential part in achieving DevOps and a CI/CD pipeline of ALFA and Attribute Based Access Control (ABAC) and can be integrated into your organizations available build tools (such as Maven, Gradle, Jenkins, Azure DevOps or OpenShift).</p>
+<div class="title">Please note that this project currently needs to be run with Java 11.</div>
+<p><a href="https://docs.gradle.org/current/userguide/what_is_gradle.html">Gradle</a> is a build automation tool that integrates well with build severs like Jenkins.</p>
 </div>
 <div class="paragraph">
-<p>This tool provides/can:</p>
+<p>This tool provides:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>Unit and with box testing of individual ALFA Policies</p>
+<p>Unit and white box testing of individual ALFA Policies</p>
 </li>
 <li>
-<p>Integrate or system testing of intermediate policies or the main policy</p>
+<p>Integration testing of multiple policies and/or combination algorithms</p>
+</li>
+<li>
+<p>System testing of the main policy</p>
 </li>
 <li>
 <p>Be configured to run with or without attribute connectors</p>
@@ -520,13 +533,13 @@ It can also be used to test a remote decision service (such as Axiomatics PDP or
 <p>Test attribute connectors in isolation as a unit</p>
 </li>
 <li>
-<p>Black box testing of remote authorzation services (such as Axiomatics PDP or ADS)</p>
+<p>Platform or accepting testing by executing the system tests towards an external ADS service</p>
 </li>
 <li>
-<p>Supports externalizing runtime configuration to environment, to be able to reuse tests from a local developer&#8217;s laptop all the way to system test of an production environment.</p>
+<p>Supports externalizing runtime configuration to the environment, to be able to reuse tests from a local developer&#8217;s laptop all the way up to system test of a production environment.</p>
 </li>
 <li>
-<p>Supports externalizing logical configuration to environment, to be able to handle different test data sets in different environment</p>
+<p>Supports externalizing logical configuration (parametrized tests) to the environment, to be able to handle different test data sets in different environments</p>
 </li>
 </ul>
 </div>
@@ -549,86 +562,134 @@ It can also be used to test a remote decision service (such as Axiomatics PDP or
 <td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">2021-11-12</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Release 1</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">2021-11-21</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Default directory for authorizationDomain content has changed to 'src/authorizationDomain' to comply with conventions. You might have to move your files to this location or update your AlfaTestRule constructors.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.0.4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">First public release</p></td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_javadocs">Javadocs</h2>
+<h2 id="_support">Support</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>See <a href="../javadoc/index.html">Javadoc</a></p>
+<p>Use your normal Axiomatics support channel for support, bug repots or feature requests.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_requirements">Requirements</h2>
+<h2 id="JavaReq">Java Requirement</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Java 11</p>
+<p>Java 11 is required to run and compile this project.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="_prerequisites">Prerequisites</h2>
 <div class="sectionbody">
-<div class="paragraph">
-<p>TBD: Install Axiomatics repo keys for Maven access</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Install Axiomatics repo keys for access to Axiomatics' Maven repository in file <em>gradle.properties</em> or set the environment variables with the same names:</p>
+</li>
+</ul>
 </div>
+<div class="listingblock">
+<div class="content">
+<pre>AXIOMATICS_ACCESS_KEY_ID=Put the key id provided by Axiomatics here!
+AXIOMATICS_SECRET_ACCESS_KEY=Put the secret key provided by Axiomatics here!</pre>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_alfa_quick_start_with_sample_project_visual_studio_code_and_gradle">ALFA quick start with sample project, Visual Studio Code and Gradle</h2>
-<div class="sectionbody">
-<div class="sect2">
-<h3 id="_sample_project">Sample project</h3>
-<div class="paragraph">
-<p>The <em>project</em> directory contains an example project. It consists of:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><em>alfaSpecifications/</em>  - ALFA policies that allows managers to do anything and consultants to do any action on a resource located in the same location as the consultant itself.</p>
-</li>
-<li>
-<p><em>attributeConnectors/</em> - Attribute connector to lookup role and locations of users and resources.</p>
-</li>
-<li>
-<p>other files necessary for the authorization domain as outlined in <a href="#_authorization_domain_v2_directory_layout_convention">Authorization domain V2 directory layout convention</a></p>
+<p>Copy the axioamtics_PDP.licnese to the license/ directory</p>
 </li>
 </ul>
 </div>
-<div class="sect3">
-<h4 id="_load_project_in_visual_studio_code">Load project in Visual Studio Code</h4>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_project_structure">Project structure</h2>
+<div class="sectionbody">
 <div class="paragraph">
-<p>The sample ALFA project can be loaded and worked with as a software project. This section show how to do that in Visual Studio Code, but you can use any other IDE that integrates with Gradle.</p>
+<p>The root directory contains a Gradle example project. It consists of:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Directory/File</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">src/authorizationDomain/</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sources for the authorization domain (for examples ALFA policies and attribute connector configuration) as outlined in <a href="#_authorization_domain_v2_directory_layout_convention">Authorization domain V2 directory layout convention</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">src/test/</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Policies and attribute connectors tests written in Java.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">buildSrc/</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Axiomatics internal script to bootstrap the projects. Should not be modified.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">extra/documentation/</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Project documentation</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">extra/exampleRequests/</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Example of sending requests using curl</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">gradle/</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Gradle internal files. Should not be modified</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">license/</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Place for Axiomatics ADS license file</p></td>
+</tr>
+</tbody>
+</table>
+<div class="sect2">
+<h3 id="_load_project_in_visual_studio_code">Load project in Visual Studio Code</h3>
+<div class="paragraph">
+<p>The sample ALFA project can be loaded and worked with as any other software project. This section show how to do that in Visual Studio Code, but you can use any other Integrated Developer Enfiroments (IDEs) that integrates with Gradle and Java.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
 <p>Install necessary extensions in Visual Studio Code:</p>
+</li>
+</ol>
+</div>
 <div class="ulist">
+<div class="title">Note if you are asked to install a Java or JDK, please choose a version listed in  <a href="#JavaReq">Java Requirement</a>.</div>
 <ul>
 <li>
 <p>Install <a href="https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-gradle">Gradle for Java</a></p>
 </li>
 <li>
-<p>Install <a href="https://marketplace.visualstudio.com/items?itemName=Axiomatics.alfa">Visual Studio Code extension for ALFA</a></p>
-</li>
-</ul>
-</div>
+<p>Install <a href="https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-pack">Extension Pack for Java</a></p>
 </li>
 <li>
-<p>In Visual Studio Code, chose Open Folder and select the <em>project</em> folder from where you unpacked this distribution. After the project has loaded you should see the project in <em>Java Projects</em> section under the <em>Explorer</em> activity.</p>
+<p>Install <a href="https://marketplace.visualstudio.com/items?itemName=Axiomatics.alfa">Visual Studio Code extension for ALFA</a></p>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>In Visual Studio Code, chose Open Folder and select this git project folder. After the project has loaded you should see the project in <em>Java Projects</em> section under the <em>Explorer</em> activity.</p>
 </li>
 </ol>
+</div>
+</li>
+</ul>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -638,11 +699,10 @@ It can also be used to test a remote decision service (such as Axiomatics PDP or
 <div class="paragraph">
 <p>The ALFA policies and attribute dictionary are located under <em>src/authorizationDomain</em>.</p>
 </div>
-</div>
 <div class="sect3">
 <h4 id="_run_tests">Run tests</h4>
 <div class="paragraph">
-<p>Select the <em>Testing</em> activity from the activity bar. You can run the tests by pressing the play icon when hovering over my-alfa-project.</p>
+<p>Select the <em>Testing</em> activity from the activity bar. You can run the tests by pressing the play icon when hovering over my-alfa-project. For a full reference on the gradle tasks, see <a href="#Gradle">Gradle</a>.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -653,78 +713,12 @@ It can also be used to test a remote decision service (such as Axiomatics PDP or
 <div class="sect3">
 <h4 id="_build_authorization_domain">Build authorization domain</h4>
 <div class="paragraph">
-<p>From the <em>Gradle</em> activity the authorization domain can be built by target <em>alfa&#8594;buildAuthzDomain</em>. The authorization domain will be written to <em>build/alfa/domain/ads</em> directory as domain.yaml. This file can be referred to by an Axiomatics Decision Service&#8217;s (ADS) deployment descriptor. See <a href="#_running_ads">Running ADS</a>.</p>
+<p>From the <em>Gradle</em> activity the authorization domain can be built by target <em>axiomaitcs&#8594;buildAuthzDomain</em>. The authorization domain will be written to <em>build/alfa/domain/ads</em> directory as domain.yaml. This file can be referred to by an Axiomatics Decision Service&#8217;s (ADS) deployment descriptor. See <a href="#_running_ads">Running ADS</a>.</p>
 </div>
 <div class="imageblock">
 <div class="content">
 <img src="project-VisualStudioCode-build.png" alt="Build authorization domain in Visual Studio Code">
 </div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_running_standalone_with_gradle">Running standalone with Gradle</h4>
-<div class="paragraph">
-<p>When building the project in a build automation tool, such as Jenkins or Azure DevOps, the gradle targets can be invoked via the gradle wrapper script.</p>
-</div>
-<div class="paragraph">
-<p>Run the tests:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell script">[user@machine project]# ./gradlew test</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Build the authorization domain:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell script">[user@machine project]# ./gradlew buildAuthzDomain</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Run the authorization domain in ADS:</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Note</div>
-</td>
-<td class="content">
-In order to run ADS you need a valid software license specified, see <a href="#GradleConfiguration">Gradle Configuration</a>
-</td>
-</tr>
-</table>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell script">[user@machine project]# ./gradlew runAds</code></pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_sending_requests">Sending requests</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>TBD/FIXME
-OpenAPI
-Sample curl request</p>
-</div>
-<div class="sect2">
-<h3 id="_runtime_libraries">Runtime libraries</h3>
-<div class="paragraph">
-<p>TBD - help -  how do we distribute depnendnecies&#8230;&#8203;..</p>
-</div>
-<div class="paragraph">
-<p>This library needs external libraries to run. Since this is a testing framework these libraries should be made available on the test classpath. These dependencies are not distributed within this package but need downloaded separately. Note that some of these libraries are only available from Axiomatics (<a href="http://support.axiomatics.com" class="bare">http://support.axiomatics.com</a>). Feel free to reach out to your Axiomatics contact to get further help. The list of dependencies can be found in See <a href="../alfa-test-framework-1.0.4.pom">alfa-test-framework-1.0.4.pom</a></p>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>Note: Attribute Connectors also need to be put on the classpath.</pre>
 </div>
 </div>
 </div>
@@ -734,10 +728,44 @@ Sample curl request</p>
 <h2 id="_authorization_domain_v2_directory_layout_convention">Authorization domain V2 directory layout convention</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The use of this framework requires your ALFA project and directories to be setup accordingly to the convention defined in <a href="auth_domain_v2_layout_convention.html">Authorization domain V2 directory layout convention</a></p>
+<p>The use of this framework requires your ALFA project and directories to be setup accordingly to Domain v2 format.</p>
 </div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Directory</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">src/authorizationDomain/alfaSpecifications</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Directory for ALFA files (policies and policy attributes)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">src/authorizationDomain/attributeConnectors</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Directory for attribute connectors</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">deployment.yaml</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The deployment descriptor for ADS (<a href="https://docs.axiomatics.com/access-decision-service/">reference</a>).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">src/authorizationDomain/attributes.yaml</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Attribute definitions of all attributes that are resolved via a attribute connector.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">src/authorizationDomain/attributeCache.yaml</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Configuration of attribute caches.</p></td>
+</tr>
+</tbody>
+</table>
 <div class="paragraph">
-<p>An example project can be found in example <a href="../project">Project</a>.</p>
+<p>For full reference, see <a href="auth_domain_v2_layout_convention.html">Authorization domain V2 directory layout convention</a>.</p>
 </div>
 </div>
 </div>
@@ -745,7 +773,23 @@ Sample curl request</p>
 <h2 id="_using_the_alfa_test_framework">Using the ALFA Test framework</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Full examples of usage can be seen in the examples/ folder.</p>
+<p>Full examples of usage can be seen in the src/ folder.</p>
+</div>
+<div class="sect2">
+<h3 id="_creating_attributes">Creating attributes</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_creating_attribute_connectors">Creating attribute connectors</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_creating_tests">Creating tests</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_creating_policies">Creating policies</h3>
+
 </div>
 <div class="sect2">
 <h3 id="_testing_alfa_policies">Testing ALFA policies</h3>
@@ -811,7 +855,7 @@ Sample curl request</p>
 <div class="sect2">
 <h3 id="_testing_obligations_and_advice">Testing Obligations and Advice</h3>
 <div class="paragraph">
-<p>Test Obligations or Advice. This will test that the text is available in any Obligation or Advice.</p>
+<p>Test Obligations or Advice. This will assert that the text is available in any Obligation or Advice.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -838,12 +882,20 @@ Sample curl request</p>
 
 ...
 
-AttributeConnector target = alfaRule.newAttributeTest(<span class="string"><span class="delimiter">&quot;</span><span class="content">roleConnector</span><span class="delimiter">&quot;</span></span>);
+AttributeConnector target = alfaRule.newAttributeTest(<span class="string"><span class="delimiter">&quot;</span><span class="content">roleConnector</span><span class="delimiter">&quot;</span></span>); // <b class="conum">(1)</b>
 
 <span class="predefined-type">List</span>&lt;<span class="predefined-type">String</span>&gt; result = target.lookup(<span class="string"><span class="delimiter">&quot;</span><span class="content">role</span><span class="delimiter">&quot;</span></span>).by(<span class="string"><span class="delimiter">&quot;</span><span class="content">user</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">bob</span><span class="delimiter">&quot;</span></span>);
 
 assertThat(result, hasItems(<span class="string"><span class="delimiter">&quot;</span><span class="content">manager</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">employee</span><span class="delimiter">&quot;</span></span>));</code></pre>
 </div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>The string parameter for the attribte test is the name of the attribute connector, which is the filename of the definition under
+<em>src/authorizationDomain/attributeConnectors</em>.</p>
+</li>
+</ol>
 </div>
 </div>
 </div>
@@ -865,7 +917,7 @@ assertThat(result, hasItems(<span class="string"><span class="delimiter">&quot;<
     environment <span class="string"><span class="delimiter">&quot;</span><span class="content">ALFA_TEST_REMOTE_URL</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">http://abac.acme.com:8081/authorize</span><span class="delimiter">&quot;</span></span>
     environment <span class="string"><span class="delimiter">&quot;</span><span class="content">ALFA_TEST_REMOTE_USER</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">pdp-user</span><span class="delimiter">&quot;</span></span>
     environment <span class="string"><span class="delimiter">&quot;</span><span class="content">ALFA_TEST_REMOTE_PASSWORD</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">secret</span><span class="delimiter">&quot;</span></span>
-    environment <span class="string"><span class="delimiter">&quot;</span><span class="content">ALFA_TEST_REMOTE_HEADER_FILE</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">headers.json</span><span class="delimiter">&quot;</span></span> <b class="conum">(1)</b>
+    environment <span class="string"><span class="delimiter">&quot;</span><span class="content">ALFA_TEST_REMOTE_HEADER_FILE</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">headers.json</span><span class="delimiter">&quot;</span></span> // <b class="conum">(1)</b>
 
 }</code></pre>
 </div>
@@ -873,12 +925,12 @@ assertThat(result, hasItems(<span class="string"><span class="delimiter">&quot;<
 <div class="colist arabic">
 <ol>
 <li>
-<p>The header file for remote connection is optional</p>
+<p>The header file for remote connection is optional. See <a href="#_extra_headers">Extra headers</a>.</p>
 </li>
 </ol>
 </div>
 <div class="paragraph">
-<p>Because we can not control which policy is the main policy of the remote service (it is already started with a main policy), we need to define which tests are meaningful to run against the remote service. Do so by specifying the main policy of your authorization domain is in the <em>alfa</em> block in build.grade:</p>
+<p>Because we can not control which policy is the main policy of the remote service (it is already started with a main policy), we need to define which tests are meaningful to run against the remote service. Do so by specifying the main policy of your authorization domain is in the <em>alfa</em> block in build.grade. Any test that is not targeting this policy will be ignored:</p>
 </div>
 <div class="listingblock">
 <div class="title">build.gradle</div>
@@ -977,22 +1029,10 @@ com.myorg.alfa.MySystemTest &gt; shouldNotGiveCeciliaAccessToResource2 PASSED</c
 </div>
 </div>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_variable_substitution">Variable substitution</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="_variable_substitution">Variable substitution</h3>
 <div class="paragraph">
-<p>Just as Axiomatics Access Decision Service (ADS), the testing framework can do variable substation in policies, attribute connectors, test data and other configuration. Also a default value can be provided:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code> ${key}
- ${key:-default value}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>for example</p>
+<p>Just as Axiomatics Access Decision Service (ADS), the testing framework can do variable substation in policies, attribute connectors, test data and other configuration. Also, a default value can be provided. Examples, with and without default values</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1000,32 +1040,61 @@ com.myorg.alfa.MySystemTest &gt; shouldNotGiveCeciliaAccessToResource2 PASSED</c
  ${PIP_URL:-http://ldap.myorganization.com}</code></pre>
 </div>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_gradle">Gradle</h2>
-<div class="sectionbody">
+<div class="sect3">
+<h4 id="_variables_in_test_data">Variables in test data</h4>
 <div class="paragraph">
-<p>Gradle configuration</p>
+<p>Variables can be used in tests to parametrize the data. This is useful if your policy infomration points (PIPs) does not contain the same data in different environments (dev and prod, for example).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"> target.newTestRequest().with(<span class="string"><span class="delimiter">&quot;</span><span class="content">user</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">${USER_WITH_ROLE_A:-Alice}</span><span class="delimiter">&quot;</span></span>)</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_defining_variables">Defining variables</h4>
+<div class="paragraph">
+<p>Variables can be defined in your test task in the <em>build._gradle</em>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">task test_ProductionEnv(type: Test) {
+    group <span class="string"><span class="delimiter">&quot;</span><span class="content">verification</span><span class="delimiter">&quot;</span></span>
+    environment <span class="string"><span class="delimiter">&quot;</span><span class="content">USER_WITH_ROLE_A</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">Bob</span><span class="delimiter">&quot;</span></span>
+    environment <span class="string"><span class="delimiter">&quot;</span><span class="content">PIP_URL</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">http://productionldap.myorganization.com</span><span class="delimiter">&quot;</span></span>
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>or specified from the command line the standard Bash way:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>$ USER_WITH_ROLE_A=Bob PIP_PASSWORD=abc123 PIP_URL=http://ldapprod.acme.com ./gradlew test_ProductionEnv</code></pre>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="GradleConfiguration">Configuration</h2>
+<h2 id="Gradle">Gradle</h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="GradleConfiguration">Configuration</h3>
 <div class="listingblock">
 <div class="title">build.gradle</div>
 <div class="content">
 <pre class="CodeRay highlight"><code>alfa {
-    mainpolicy = &quot;acme.Main&quot;<b class="conum">(1)</b>
-    licenseFile = &quot;./license/axiomatics_PDP.license&quot;<b class="conum">(2)</b>
+    mainpolicy = &quot;acme.Main&quot; // <b class="conum">(1)</b>
+    licenseFile = &quot;license/axiomatics_PDP.license&quot; // <b class="conum">(2)</b>
 }</code></pre>
 </div>
 </div>
 <div class="colist arabic">
 <ol>
 <li>
-<p>Name of the policy to be used as the main policy when building the authoriation domain</p>
+<p>Name of the policy to be used as the main policy when building the authorization domain</p>
 </li>
 <li>
 <p>Location to Axiomatics PDP license file</p>
@@ -1033,12 +1102,119 @@ com.myorg.alfa.MySystemTest &gt; shouldNotGiveCeciliaAccessToResource2 PASSED</c
 </ol>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_tasks">Tasks</h3>
+<div class="paragraph">
+<p>The following Gradle tasks are available. They can be executed from your IDE, the command line or a build automation tool, such as Jenkins or Azure DevOps.</p>
+</div>
+<div class="sect3">
+<h4 id="_execute_the_tests">Execute the tests</h4>
+<div class="listingblock">
+<div class="content">
+<pre>[user@machine project]# ./gradlew test</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>A test report will be produced in <em>build/reports/tests/</em></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_build_authorization_domain_2">Build  authorization domain</h4>
+<div class="listingblock">
+<div class="content">
+<pre>[user@machine project]# ./gradlew buildAuthzDomain</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The authorization domain, containing policies and attribute connectors, will be written to <em>build/alfa/ads/domain.yaml</em>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_stage_ads_configuration">Stage ADS configuration</h4>
+<div class="paragraph">
+<p>Build and stage all files necessary for ADS to run. Files will be staged to <em>build/alfa/domain/ads</em>.:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>[user@machine project]# ./gradlew stageAdsFiles</pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_run_ads">Run ADS</h4>
+<div class="paragraph">
+<p>Run the authorization domain in ADS:</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+In order to run ADS you need a valid software license specified, see <a href="#GradleConfiguration">Gradle Configuration</a>
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>[user@machine project]# ./gradlew runAds</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Press Ctrl+C to stop it.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_dependency_configurations">Dependency configurations</h3>
+<div class="paragraph">
+<p>Dependency configuration in gradle is used to configure the classpath for different tasks.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Configuration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pip</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Any additional attribute connector dependencies. Axiomatics HTTP, Parser and Constant attribute connectors always available on this configuration.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">testImplementation</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Any additional dependencies for executing tests.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ads</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Any additional dependencies for running ADS.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Configurations <em>testImplementation</em> and <em>ads</em> extends from <em>pip</em>. To add a new dependency on the pip configuration:</p>
+</div>
+<div class="listingblock">
+<div class="title">build.gradle</div>
+<div class="content">
+<pre class="CodeRay highlight"><code>dependencies {
+    pip '&lt;group&gt;:&lt;name&gt;:&lt;version&gt;'
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div class="sect1">
 <h2 id="_debugging">Debugging</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_request_and_responses">Request and responses</h3>
+<h3 id="RequestAndResponse">Request and responses</h3>
 <div class="paragraph">
 <p>For tests that have been executed against a remote service, the generated JSON reqeusts and received JSON responses can be found in /build/alfa/tests/authorizationDomain/trace directory.</p>
 </div>
@@ -1046,15 +1222,42 @@ com.myorg.alfa.MySystemTest &gt; shouldNotGiveCeciliaAccessToResource2 PASSED</c
 <div class="sect2">
 <h3 id="_tracing">Tracing</h3>
 <div class="paragraph">
-<p>For the tests that have executed against local ALFA files, an execution trace file can be found in /build/alfa/tests/authorizationDomain/trace directory. This format is Axiomatics specific and can be sent to Axiomatics support for further analysis.</p>
+<p>For the tests that have executed against local ALFA files, an execution trace file can be found in <em>/build/alfa/tests/authorizationDomain/trace</em> directory. This format is Axiomatics specific and can be loaded in a separate application (Axiomatics PAP) or sent to Axiomatics support for further analysis if needed.</p>
 </div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_debug">Debug</h2>
+<h2 id="_peps_and_sending_requests">PEPs and sending requests</h2>
 <div class="sectionbody">
-
+<div class="sect2">
+<h3 id="_curl_with_json_body">Curl with JSON body</h3>
+<div class="paragraph">
+<p>TBD
+When executing the Gradle test task, if the target is an external ADS, the request and response JSON will be saved in the build directory, see <a href="#RequestAndResponse">Request and responses</a></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_openapi">OpenAPI</h3>
+<div class="paragraph">
+<p>Open API (previously known as Swagger Specification) of the API to send authorization requests to the Axiomatics Decision Service or any other PDP can be found at
+<a href="https://github.com/axiomatics/xacml-3.0-authz-service-openapi-spec" class="bare">https://github.com/axiomatics/xacml-3.0-authz-service-openapi-spec</a>. OpenAPI specification can be used to generate clients by Swagger tools or imported directly into Postman for example.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_sample_ava_pep_implementation">Sample ava PEP implementation</h3>
+<div class="paragraph">
+<p>An example Java PEP implementation can be found in
+<a href="https://github.com/axiomatics/java-json-pep-sdk" class="bare">https://github.com/axiomatics/java-json-pep-sdk</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_reference_documentation">Reference documentation</h3>
+<div class="paragraph">
+<p>THe XACML JSON reference documentation from OASIS is avaialble here
+<a href="http://docs.oasis-open.org/xacml/xacml-json-http/v1.0/xacml-json-http-v1.0.html" class="bare">http://docs.oasis-open.org/xacml/xacml-json-http/v1.0/xacml-json-http-v1.0.html</a></p>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -1066,14 +1269,6 @@ com.myorg.alfa.MySystemTest &gt; shouldNotGiveCeciliaAccessToResource2 PASSED</c
 <div class="sect2">
 <h3 id="_license">License</h3>
 
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_docker">Docker</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>TBD</p>
 </div>
 </div>
 </div>
