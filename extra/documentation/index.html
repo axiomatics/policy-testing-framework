@@ -452,27 +452,54 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_prerequisites">Prerequisites</a></li>
 <li><a href="#_project_structure">Project structure</a>
 <ul class="sectlevel2">
-<li><a href="#_load_project_in_visual_studio_code">Load project in Visual Studio Code</a></li>
+<li><a href="#_quick_start_in_visual_studio_code">Quick start in Visual Studio Code</a></li>
 </ul>
 </li>
-<li><a href="#_authorization_domain_v2_directory_layout_convention">Authorization domain V2 directory layout convention</a></li>
+<li><a href="#_authorization_domain_v2_directory_layout_convention">Authorization domain V2 directory layout convention</a>
+<ul class="sectlevel2">
+<li><a href="#DomainV2MoreInformation">More information</a></li>
+</ul>
+</li>
 <li><a href="#_using_the_alfa_test_framework">Using the ALFA Test framework</a>
 <ul class="sectlevel2">
+<li><a href="#_dictionary">Dictionary</a></li>
 <li><a href="#_creating_attributes">Creating attributes</a></li>
-<li><a href="#_creating_attribute_connectors">Creating attribute connectors</a></li>
 <li><a href="#_creating_tests">Creating tests</a></li>
 <li><a href="#_creating_policies">Creating policies</a></li>
-<li><a href="#_testing_alfa_policies">Testing ALFA policies</a></li>
-<li><a href="#_testing_obligations_and_advice">Testing Obligations and Advice</a></li>
-<li><a href="#_running_test_against_a_remote_service">Running test against a remote service</a></li>
-<li><a href="#_variable_substitution">Variable substitution</a></li>
+<li><a href="#_creating_attribute_connectors">Creating attribute connectors</a></li>
+</ul>
+</li>
+<li><a href="#testing_alfa_policies">Testing ALFA policies</a>
+<ul class="sectlevel2">
+<li><a href="#_creating_the_junit_test">Creating the junit test</a></li>
+<li><a href="#set_policy_under_test">Set policy under test</a></li>
+<li><a href="#_with_attribute_connectors">With Attribute Connectors</a></li>
+<li><a href="#_execute_test_request_and_assert_result">Execute test request and assert result</a></li>
+</ul>
+</li>
+<li><a href="#_testing_obligations_and_advice">Testing Obligations and Advice</a>
+<ul class="sectlevel2">
+<li><a href="#_testing_attribute_connectors">Testing Attribute Connectors</a></li>
+</ul>
+</li>
+<li><a href="#running_test_against_a_remote_service">Running test against a remote service</a>
+<ul class="sectlevel2">
+<li><a href="#_create_a_remote_test_target_task">Create a remote test target task</a></li>
+<li><a href="#_environment_variables_for_controlling_remote_test_execution">Environment variables for controlling remote test execution</a></li>
+<li><a href="#_extra_headers">Extra headers</a></li>
+</ul>
+</li>
+<li><a href="#_variable_substitution">Variable substitution</a>
+<ul class="sectlevel2">
+<li><a href="#_variables_in_test_data">Variables in test data</a></li>
+<li><a href="#_defining_variables">Defining variables</a></li>
 </ul>
 </li>
 <li><a href="#Gradle">Gradle</a>
 <ul class="sectlevel2">
 <li><a href="#GradleConfiguration">Configuration</a></li>
 <li><a href="#_tasks">Tasks</a></li>
-<li><a href="#_dependency_configurations">Dependency configurations</a></li>
+<li><a href="#DependencyConfiguration">Dependency configurations</a></li>
 </ul>
 </li>
 <li><a href="#_debugging">Debugging</a>
@@ -503,13 +530,24 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h2 id="_introduction">Introduction</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>ALFA Testing Framework tool is a Gradle project and JUnit4 extension to develop and test ALFA policies, attribute connectors (PIPs) and your whole authorization/Attribute Based Access Control domain</p>
+<p>ALFA Testing Framework tool is a Gradle project and JUnit4 extension to develop and test ALFA policies, attribute connectors and your entire authorization/Attribute Based Access Control (ABAC) domain.</p>
 </div>
 <div class="paragraph">
 <p>An ALFA project can be a fundamental part in achieving DevOps and a CI/CD pipeline of ALFA and Attribute Based Access Control (ABAC) and can be integrated into your organizations available build tools (such as Jenkins, Azure DevOps or OpenShift).</p>
 </div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">
+Please note that this project currently needs to be run with Java 11.
+</td>
+</tr>
+</table>
+</div>
 <div class="paragraph">
-<div class="title">Please note that this project currently needs to be run with Java 11.</div>
 <p><a href="https://docs.gradle.org/current/userguide/what_is_gradle.html">Gradle</a> is a build automation tool that integrates well with build severs like Jenkins.</p>
 </div>
 <div class="paragraph">
@@ -521,7 +559,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p>Unit and white box testing of individual ALFA Policies</p>
 </li>
 <li>
-<p>Integration testing of multiple policies and/or combination algorithms</p>
+<p>Integration testing of multiple policies and/or policy combination algorithms</p>
 </li>
 <li>
 <p>System testing of the main policy</p>
@@ -573,7 +611,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h2 id="_support">Support</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Use your normal Axiomatics support channel for support, bug repots or feature requests.</p>
+<p>Use your normal Axiomatics support channel for support, bug reports or feature requests.</p>
 </div>
 </div>
 </div>
@@ -581,7 +619,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h2 id="JavaReq">Java Requirement</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Java 11 is required to run and compile this project.</p>
+<p>Java 11 is required to compile and run this project.</p>
 </div>
 </div>
 </div>
@@ -591,20 +629,20 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="ulist">
 <ul>
 <li>
-<p>Install Axiomatics repo keys for access to Axiomatics' Maven repository in file <em>gradle.properties</em> or set the environment variables with the same names:</p>
+<p>Install Axiomatics repository key for access to Axiomatics' Maven repository in file <em>gradle.properties</em> or set the environment variables with the same names:</p>
 </li>
 </ul>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>AXIOMATICS_ACCESS_KEY_ID=Put the key id provided by Axiomatics here!
-AXIOMATICS_SECRET_ACCESS_KEY=Put the secret key provided by Axiomatics here!</pre>
+<pre>AXIOMATICS_ACCESS_KEY_ID=&lt;key_id&gt;
+AXIOMATICS_SECRET_ACCESS_KEY=&lt;access_key&gt;</pre>
 </div>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>Copy the axioamtics_PDP.licnese to the license/ directory</p>
+<p>Copy your software license file axiomatics_PDP.license to the <em>license/</em> directory.</p>
 </li>
 </ul>
 </div>
@@ -630,7 +668,7 @@ AXIOMATICS_SECRET_ACCESS_KEY=Put the secret key provided by Axiomatics here!</pr
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">src/authorizationDomain/</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Sources for the authorization domain (for examples ALFA policies and attribute connector configuration) as outlined in <a href="#_authorization_domain_v2_directory_layout_convention">Authorization domain V2 directory layout convention</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sources for the authorization domain (ALFA policies and attribute connector configuration) as outlined in <a href="#_authorization_domain_v2_directory_layout_convention">Authorization domain V2 directory layout convention</a></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">src/test/</p></td>
@@ -656,22 +694,34 @@ AXIOMATICS_SECRET_ACCESS_KEY=Put the secret key provided by Axiomatics here!</pr
 <td class="tableblock halign-left valign-top"><p class="tableblock">license/</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Place for Axiomatics ADS license file</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">build.gradle</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Project configuration</p></td>
+</tr>
 </tbody>
 </table>
 <div class="sect2">
-<h3 id="_load_project_in_visual_studio_code">Load project in Visual Studio Code</h3>
+<h3 id="_quick_start_in_visual_studio_code">Quick start in Visual Studio Code</h3>
 <div class="paragraph">
-<p>The sample ALFA project can be loaded and worked with as any other software project. This section show how to do that in Visual Studio Code, but you can use any other Integrated Developer Enfiroments (IDEs) that integrates with Gradle and Java.</p>
+<p>The sample ALFA project can be loaded and worked with as any other software project. This section show how to do that in Visual Studio Code, but you can use any other Integrated Developer Environment (IDEs) that integrates with Gradle and Java.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+Note if you are asked to install a Java or JDK, please choose a version listed in  <a href="#JavaReq">Java Requirement</a>.
+</td>
+</tr>
+</table>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
 <p>Install necessary extensions in Visual Studio Code:</p>
-</li>
-</ol>
-</div>
 <div class="ulist">
-<div class="title">Note if you are asked to install a Java or JDK, please choose a version listed in  <a href="#JavaReq">Java Requirement</a>.</div>
 <ul>
 <li>
 <p>Install <a href="https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-gradle">Gradle for Java</a></p>
@@ -681,15 +731,14 @@ AXIOMATICS_SECRET_ACCESS_KEY=Put the secret key provided by Axiomatics here!</pr
 </li>
 <li>
 <p>Install <a href="https://marketplace.visualstudio.com/items?itemName=Axiomatics.alfa">Visual Studio Code extension for ALFA</a></p>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>In Visual Studio Code, chose Open Folder and select this git project folder. After the project has loaded you should see the project in <em>Java Projects</em> section under the <em>Explorer</em> activity.</p>
-</li>
-</ol>
-</div>
 </li>
 </ul>
+</div>
+</li>
+<li>
+<p>In Visual Studio Code, chose Open Folder and select this project folder. After the project has loaded you should see the project in <em>Java Projects</em> section under the <em>Explorer</em> activity.</p>
+</li>
+</ol>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -713,7 +762,7 @@ AXIOMATICS_SECRET_ACCESS_KEY=Put the secret key provided by Axiomatics here!</pr
 <div class="sect3">
 <h4 id="_build_authorization_domain">Build authorization domain</h4>
 <div class="paragraph">
-<p>From the <em>Gradle</em> activity the authorization domain can be built by target <em>axiomaitcs&#8594;buildAuthzDomain</em>. The authorization domain will be written to <em>build/alfa/domain/ads</em> directory as domain.yaml. This file can be referred to by an Axiomatics Decision Service&#8217;s (ADS) deployment descriptor. See <a href="#_running_ads">Running ADS</a>.</p>
+<p>From the <em>Gradle</em> activity the authorization domain can be built by target <em>axiomaitcs&#8594;buildAuthzDomain</em>. The authorization domain configuration will be written to <em>build/alfa/domain/ads</em>  as domain.yaml. This file can be referred to by an Axiomatics Decision Service&#8217;s (ADS) deployment descriptor. See <a href="#_running_ads">Running ADS</a>.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -744,7 +793,7 @@ AXIOMATICS_SECRET_ACCESS_KEY=Put the secret key provided by Axiomatics here!</pr
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">src/authorizationDomain/alfaSpecifications</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Directory for ALFA files (policies and policy attributes)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Directory for ALFA policies and attributes</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">src/authorizationDomain/attributeConnectors</p></td>
@@ -764,8 +813,11 @@ AXIOMATICS_SECRET_ACCESS_KEY=Put the secret key provided by Axiomatics here!</pr
 </tr>
 </tbody>
 </table>
+<div class="sect2">
+<h3 id="DomainV2MoreInformation">More information</h3>
 <div class="paragraph">
 <p>For full reference, see <a href="auth_domain_v2_layout_convention.html">Authorization domain V2 directory layout convention</a>.</p>
+</div>
 </div>
 </div>
 </div>
@@ -773,32 +825,285 @@ AXIOMATICS_SECRET_ACCESS_KEY=Put the secret key provided by Axiomatics here!</pr
 <h2 id="_using_the_alfa_test_framework">Using the ALFA Test framework</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Full examples of usage can be seen in the src/ folder.</p>
+<p>This section describes a workflow to create an authorization domain with ALFA policies and attribute connectors to your PIPs. A full example is also provided in the src/ folder.</p>
+</div>
+<div class="paragraph">
+<p>Before starting with implementation of your authorization domain, capture your business requirements for authorization in an existing tool that you have (JIRA, Confluence, Excel). Extract the necessary attributes to implement such requirements and specify them in an attribute dictionary.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<em>id</em> is a reserved keyword in <a href="https://docs.axiomatics.com/access-decision-service/authorization-domains/using-a-yaml-domain/#the-attributes-section">ALFA</a> and can not be used in attribute names.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_dictionary">Dictionary</h3>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. Attribute dictionary</caption>
+<colgroup>
+<col style="width: 10%;">
+<col style="width: 10%;">
+<col style="width: 10%;">
+<col style="width: 10%;">
+<col style="width: 10%;">
+<col style="width: 10%;">
+<col style="width: 10%;">
+<col style="width: 10%;">
+<col style="width: 10%;">
+<col style="width: 10%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name (namespace+id)</th>
+<th class="tableblock halign-left valign-top">Category</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Source</th>
+<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Responsible/SLA</th>
+<th class="tableblock halign-left valign-top">Cardinality</th>
+<th class="tableblock halign-left valign-top">Reference</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Examples</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">acme.user.identity</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">subject</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">- (PEP)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1..1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">HR AD, 6 character alphanum</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Acme employee signature</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">johsmi, jandoe</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">acme.customer.identity</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">resource</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">- (PEP)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0&#8230;&#8203;*</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Salesforce customer id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The customer(s) involved in action</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">231698, 249111</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">acme.customer.location</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">resource</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Salesforce customer PIP</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">acme.customer.identity</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Business Operation team, 99%</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0&#8230;&#8203;*</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ISO 3166-1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Customer origin country</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SE, US</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect2">
 <h3 id="_creating_attributes">Creating attributes</h3>
-
+<div class="paragraph">
+<p>Attributes need to be defined in dictionaries before they can be used in an ALFA policy or Attribute Connector. There are two dictionaries that needs to be populated. <em>src\authorizationDomain\alfaSpecifications\attributes.alfa</em> contains attributes used in ALFA policies and in tests. <em>src\authorizationDomain\attributes.yaml</em> contains attributes that are used as output from Attribute Connectors.</p>
 </div>
-<div class="sect2">
-<h3 id="_creating_attribute_connectors">Creating attribute connectors</h3>
+<div class="sect3">
+<h4 id="_policy_attributes">Policy attributes</h4>
+<div class="paragraph">
+<p>To use an attribute in ALFA policy or in a Junit test define it in an ALFA file inside the authorizationDomain directory. Organize your attribute in namespaces hierarchies as needed.</p>
+</div>
+<div class="paragraph">
+<p>Type is the JSON shorthand type code defined <a href="http://docs.oasis-open.org/xacml/xacml-json-http/v1.0/cos01/xacml-json-http-v1.0-cos01.html#_Toc497727075">here.</a></p>
+</div>
+<div class="paragraph">
+<p>Category is any of: <em>subjectCat, resourceCat, actionCat or environmentCat</em> and defines if the attribute is a property of a subject (such as role) or  resource (such as owner) etc.</p>
+</div>
+<div class="paragraph">
+<p>The id can for convenience always be set to namespaces concatenated with a dot plus the attribute name.</p>
+</div>
+<div class="paragraph">
+<p>The format of this file is ALFA.</p>
+</div>
+<div class="listingblock">
+<div class="title">attributes.alfa</div>
+<div class="content">
+<pre class="CodeRay highlight"><code>namespace acme {
+       namespace user {
+        attribute role {
+            id = &quot;acme.user.role&quot;
+            type = string
+            category = subjectCat
+        }
+    }
 
+    namespace resource {
+        attribute location {
+            id = &quot;acme.resource.location&quot;
+            type = string
+            category = resourceCat
+        }
+
+        attribute identity {
+            id = &quot;acme.resource.identity&quot;
+            type = string
+            category = resourceCat
+        }
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_attributes_yaml">attributes.yaml</h4>
+<div class="paragraph">
+<p>Attributes that are resolved by an Attribute Finder (and thus can is cachable) needs to be defined in the attribute.yaml file. This file is YAML format. More information <a href="https://docs.axiomatics.com/access-decision-service/authorization-domains/using-a-yaml-domain/#the-attributes-section">here</a>.</p>
+</div>
+<div class="paragraph">
+<p>Category is any of: <em>AccessSubject, Resource, Action or Environment</em> and defines if the attribute is a property of a subject (such as role) or  resource (such as owner) etc.</p>
+</div>
+<div class="paragraph">
+<p>The xacmlId can for convenience always be set to namespaces concatenated with a dot plus the attribute name.</p>
+</div>
+<div class="paragraph">
+<p>The format of this file is YAML.</p>
+</div>
+<div class="listingblock">
+<div class="title">attributes.yaml</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">acme.user.role</span>:
+  <span class="key">xacmlId</span>: <span class="string"><span class="content">acme.user.role</span></span>
+  <span class="key">category</span>: <span class="string"><span class="content">AccessSubject</span></span>
+  <span class="key">datatype</span>: <span class="string"><span class="content">string</span></span>
+<span class="key">acme.user.location</span>:
+  <span class="key">xacmlId</span>: <span class="string"><span class="content">acme.user.location</span></span>
+  <span class="key">category</span>: <span class="string"><span class="content">AccessSubject</span></span>
+  <span class="key">datatype</span>: <span class="string"><span class="content">string</span></span>
+<span class="key">acme.resource.location</span>:
+  <span class="key">xacmlId</span>: <span class="string"><span class="content">acme. resource.location</span></span>
+  <span class="key">category</span>: <span class="string"><span class="content">Resource</span></span>
+  <span class="key">datatype</span>: <span class="string"><span class="content">string</span></span></code></pre>
+</div>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_creating_tests">Creating tests</h3>
-
+<div class="paragraph">
+<p>We advocate test-driven development (<a href="https://en.wikipedia.org/wiki/Test-driven_development">TDD</a>) of ALFA and your authorization domain. This means that before you are allowed to write any effective code (that would your ALFA policies) you must first write and run a test that fails. So, go ahead and write a unit test that fails. See <a href="#testing_alfa_policies">Testing ALFA policies</a>.</p>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_creating_policies">Creating policies</h3>
 
 </div>
 <div class="sect2">
-<h3 id="_testing_alfa_policies">Testing ALFA policies</h3>
-<div class="sect3">
-<h4 id="_creating_the_junit_test_rule">Creating the junit test rule</h4>
+<h3 id="_creating_attribute_connectors">Creating attribute connectors</h3>
 <div class="paragraph">
-<p>Create a new ALFA rule:</p>
+<p>Attribute Connectors connects the decision service (Axiomatics component ADS or PDP) with external Policy Information Points (PIPs). With the help of attribute connectors our engine can in runtime call out to your directory to eg. fetch a role for a user. It is possible to cache these attribute values.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">
+Based on a value of a key attribute, an attribute connector enables the decision engine to call out to an external source (the PIP), to fetch values for another attribute.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_ldap">LDAP</h4>
+
+</div>
+<div class="sect3">
+<h4 id="_sql">SQL</h4>
+
+</div>
+<div class="sect3">
+<h4 id="_sql_table">SQL Table</h4>
+
+</div>
+<div class="sect3">
+<h4 id="_http_restjson_or_wssoap">HTTP (REST/JSON or WS/SOAP)</h4>
+
+</div>
+<div class="sect3">
+<h4 id="_constant">Constant</h4>
+
+</div>
+<div class="sect3">
+<h4 id="_attribute_value_caching">Attribute value caching</h4>
+
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="testing_alfa_policies">Testing ALFA policies</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A typical deployment with goal of going into production can have the following tests.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Test</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Who, Where</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Policy unit test</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Tests a specific policy for a use case in isolation without attribute connectors or other policies</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Local developer, pipeline before deploying</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Attribute Connector unit test</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Tests that a specific Attribute Connector can reach out to an external PIP to retrieve attributes.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Local developer, pipeline before deploying</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Policy and Attribute connector integration test</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Tests that a specific policy for a use case works in integration with the Attribute Connectors it needs.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Local developer, pipeline before deploying</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Policies integration test</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Tests that multiple usecases with multiple policies works in combination and that combination algorithms (policy priorities) are correct.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Local developer, pipeline before deploying</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">System/acceptance test</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pipeline after deploying, possibly exception production environment</p></td>
+</tr>
+</tbody>
+</table>
+<div class="sect2">
+<h3 id="_creating_the_junit_test">Creating the junit test</h3>
+<div class="paragraph">
+<p>Create a java file under <em>src/test</em> and create new ALFA rule:</p>
 </div>
 <div class="listingblock">
+<div class="title">acmeUnitTest.java</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">import</span> <span class="include">org.junit.Test</span>;
 <span class="keyword">import</span> <span class="include">com.axiomatics.cr.alfa.test.junit.AlfaTestRule</span>;
@@ -808,10 +1113,10 @@ AXIOMATICS_SECRET_ACCESS_KEY=Put the secret key provided by Axiomatics here!</pr
 </div>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_set_policy_under_test">Set policy under test</h4>
+<div class="sect2">
+<h3 id="set_policy_under_test">Set policy under test</h3>
 <div class="paragraph">
-<p>Set policy under test. This can either be set to your ALFA main policy or a specific policy, depending if this is a system test or integration/unit test. (See <a href="#running test against a remote service">Running test against a remote service</a>).</p>
+<p>Set policy under test. This can either be set to your ALFA main policy or a specific policy, depending if this is a system test or integration/unit test. (See <a href="#running_test_against_a_remote_service">Running test against a remote service</a>).</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -819,10 +1124,22 @@ AXIOMATICS_SECRET_ACCESS_KEY=Put the secret key provided by Axiomatics here!</pr
 </div>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_with_attribute_connectors">With Attribute Connectors</h4>
+<div class="sect2">
+<h3 id="_with_attribute_connectors">With Attribute Connectors</h3>
 <div class="paragraph">
 <p>Specify that all attribute connectors should be used during the test. Has no effect if test is being run against a remote service. Your attribute connectors are not added by default to the test enviornment. If you should add them or not depends on the test your are writing. Normally they should not be added for a unit test, but for integration and system tests.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+If you are implementing a Policy unit test, you should not enable you attribute connectors, but simulate them in a controlled manner by specifying them as test input using the <em>.with(&#8230;&#8203;)</em> method.
+</td>
+</tr>
+</table>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -830,8 +1147,8 @@ AXIOMATICS_SECRET_ACCESS_KEY=Put the secret key provided by Axiomatics here!</pr
 </div>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_execute_test_request_and_assert_result">Execute test request and assert result</h4>
+<div class="sect2">
+<h3 id="_execute_test_request_and_assert_result">Execute test request and assert result</h3>
 <div class="paragraph">
 <p>Execute a test with the help of Hamcrest matchers.</p>
 </div>
@@ -852,8 +1169,10 @@ AXIOMATICS_SECRET_ACCESS_KEY=Put the secret key provided by Axiomatics here!</pr
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_testing_obligations_and_advice">Testing Obligations and Advice</h3>
+</div>
+<div class="sect1">
+<h2 id="_testing_obligations_and_advice">Testing Obligations and Advice</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>Test Obligations or Advice. This will assert that the text is available in any Obligation or Advice.</p>
 </div>
@@ -870,8 +1189,8 @@ AXIOMATICS_SECRET_ACCESS_KEY=Put the secret key provided by Axiomatics here!</pr
 <pre class="CodeRay highlight"><code data-lang="java"> assertThat(result.getObligation(), hasItem(withIdAndText(<span class="string"><span class="delimiter">&quot;</span><span class="content">org.obligation.message</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">Obligation from PDP</span><span class="delimiter">&quot;</span></span>)));</code></pre>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_testing_attribute_connectors">Testing Attribute Connectors</h4>
+<div class="sect2">
+<h3 id="_testing_attribute_connectors">Testing Attribute Connectors</h3>
 <div class="paragraph">
 <p>An Attribute Connector can be unit tested. The name of the attribute connector is the same as the filename of the connector under /attributeConnectors.</p>
 </div>
@@ -899,13 +1218,15 @@ assertThat(result, hasItems(<span class="string"><span class="delimiter">&quot;<
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_running_test_against_a_remote_service">Running test against a remote service</h3>
+</div>
+<div class="sect1">
+<h2 id="running_test_against_a_remote_service">Running test against a remote service</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>The same tests that are run in your editor (which tests your ALFA policies) can also be run against a remote authorization service (Axiomatics ADS or PDP), either from your local computer or a build server (e.g. Jenkins or Azure Devops).</p>
 </div>
-<div class="sect3">
-<h4 id="_create_a_remote_test_target_task">Create a remote test target task</h4>
+<div class="sect2">
+<h3 id="_create_a_remote_test_target_task">Create a remote test target task</h3>
 <div class="paragraph">
 <p>To create a new test target task in Gradle, add a new task (or modify one of the existing in the sample project:</p>
 </div>
@@ -950,7 +1271,7 @@ assertThat(result, hasItems(<span class="string"><span class="delimiter">&quot;<
 <div class="title">Note</div>
 </td>
 <td class="content">
-A test is marked to be run using the withMainPolicy() method when creating the Alfa Junit rule. See <a href="#_set_policy_under_test">Set policy under test</a>.
+A test is marked to be run using the withMainPolicy() method when creating the Alfa Junit rule. See <a href="#set_policy_under_test">Set policy under test</a>.
 </td>
 </tr>
 </table>
@@ -976,8 +1297,8 @@ com.myorg.alfa.MySystemTest &gt; shouldNotGiveCeciliaAccessToResource2 PASSED</c
 </div>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_environment_variables_for_controlling_remote_test_execution">Environment variables for controlling remote test execution</h4>
+<div class="sect2">
+<h3 id="_environment_variables_for_controlling_remote_test_execution">Environment variables for controlling remote test execution</h3>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -1013,8 +1334,8 @@ com.myorg.alfa.MySystemTest &gt; shouldNotGiveCeciliaAccessToResource2 PASSED</c
 </tbody>
 </table>
 </div>
-<div class="sect3">
-<h4 id="_extra_headers">Extra headers</h4>
+<div class="sect2">
+<h3 id="_extra_headers">Extra headers</h3>
 <div class="paragraph">
 <p>In case the test client needs to send extra headers to the external service (for example if there is an intermediate API gateway), these headers can be specified in a separate JSON file and the location of file can be set in an environment variable (ALFA_TEST_REMOTE_HEADER_FILE). <a href="#_variable_substitution">Variable substitution</a> can be used in this file to externalize configuration.</p>
 </div>
@@ -1029,8 +1350,10 @@ com.myorg.alfa.MySystemTest &gt; shouldNotGiveCeciliaAccessToResource2 PASSED</c
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_variable_substitution">Variable substitution</h3>
+</div>
+<div class="sect1">
+<h2 id="_variable_substitution">Variable substitution</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>Just as Axiomatics Access Decision Service (ADS), the testing framework can do variable substation in policies, attribute connectors, test data and other configuration. Also, a default value can be provided. Examples, with and without default values</p>
 </div>
@@ -1040,8 +1363,8 @@ com.myorg.alfa.MySystemTest &gt; shouldNotGiveCeciliaAccessToResource2 PASSED</c
  ${PIP_URL:-http://ldap.myorganization.com}</code></pre>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_variables_in_test_data">Variables in test data</h4>
+<div class="sect2">
+<h3 id="_variables_in_test_data">Variables in test data</h3>
 <div class="paragraph">
 <p>Variables can be used in tests to parametrize the data. This is useful if your policy infomration points (PIPs) does not contain the same data in different environments (dev and prod, for example).</p>
 </div>
@@ -1051,8 +1374,8 @@ com.myorg.alfa.MySystemTest &gt; shouldNotGiveCeciliaAccessToResource2 PASSED</c
 </div>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_defining_variables">Defining variables</h4>
+<div class="sect2">
+<h3 id="_defining_variables">Defining variables</h3>
 <div class="paragraph">
 <p>Variables can be defined in your test task in the <em>build._gradle</em>:</p>
 </div>
@@ -1076,7 +1399,6 @@ com.myorg.alfa.MySystemTest &gt; shouldNotGiveCeciliaAccessToResource2 PASSED</c
 </div>
 </div>
 </div>
-</div>
 <div class="sect1">
 <h2 id="Gradle">Gradle</h2>
 <div class="sectionbody">
@@ -1088,6 +1410,8 @@ com.myorg.alfa.MySystemTest &gt; shouldNotGiveCeciliaAccessToResource2 PASSED</c
 <pre class="CodeRay highlight"><code>alfa {
     mainpolicy = &quot;acme.Main&quot; // <b class="conum">(1)</b>
     licenseFile = &quot;license/axiomatics_PDP.license&quot; // <b class="conum">(2)</b>
+}
+dependencies { // <b class="conum">(3)</b>
 }</code></pre>
 </div>
 </div>
@@ -1099,6 +1423,9 @@ com.myorg.alfa.MySystemTest &gt; shouldNotGiveCeciliaAccessToResource2 PASSED</c
 <li>
 <p>Location to Axiomatics PDP license file</p>
 </li>
+<li>
+<p><a href="#DependencyConfiguration">Dependency Configuration</a></p>
+</li>
 </ol>
 </div>
 </div>
@@ -1106,6 +1433,14 @@ com.myorg.alfa.MySystemTest &gt; shouldNotGiveCeciliaAccessToResource2 PASSED</c
 <h3 id="_tasks">Tasks</h3>
 <div class="paragraph">
 <p>The following Gradle tasks are available. They can be executed from your IDE, the command line or a build automation tool, such as Jenkins or Azure DevOps.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>test
+buildAuthzDomain
+stageDeploymentDescriptor
+runAds</pre>
+</div>
 </div>
 <div class="sect3">
 <h4 id="_execute_the_tests">Execute the tests</h4>
@@ -1136,7 +1471,7 @@ com.myorg.alfa.MySystemTest &gt; shouldNotGiveCeciliaAccessToResource2 PASSED</c
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>[user@machine project]# ./gradlew stageAdsFiles</pre>
+<pre>[user@machine project]# ./gradlew stageDeploymentDescriptor</pre>
 </div>
 </div>
 </div>
@@ -1168,7 +1503,7 @@ In order to run ADS you need a valid software license specified, see <a href="#G
 </div>
 </div>
 <div class="sect2">
-<h3 id="_dependency_configurations">Dependency configurations</h3>
+<h3 id="DependencyConfiguration">Dependency configurations</h3>
 <div class="paragraph">
 <p>Dependency configuration in gradle is used to configure the classpath for different tasks.</p>
 </div>
