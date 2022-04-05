@@ -514,10 +514,6 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_openapi">OpenAPI</a></li>
 <li><a href="#_sample_ava_pep_implementation">Sample ava PEP implementation</a></li>
 <li><a href="#_reference_documentation">Reference documentation</a></li>
-</ul>
-</li>
-<li><a href="#_running_ads">Running ADS</a>
-<ul class="sectlevel2">
 <li><a href="#_license">License</a></li>
 </ul>
 </li>
@@ -762,7 +758,7 @@ Note if you are asked to install a Java or JDK, please choose a version listed i
 <div class="sect3">
 <h4 id="_build_authorization_domain">Build authorization domain</h4>
 <div class="paragraph">
-<p>From the <em>Gradle</em> activity the authorization domain can be built by target <em>axiomaitcs&#8594;buildAuthzDomain</em>. The authorization domain configuration will be written to <em>build/alfa/domain/ads</em>  as domain.yaml. This file can be referred to by an Axiomatics Decision Service&#8217;s (ADS) deployment descriptor. See <a href="#_running_ads">Running ADS</a>.</p>
+<p>From the <em>Gradle</em> activity the authorization domain can be built by target <em>axiomaitcs&#8594;buildAuthzDomain</em>. The authorization domain configuration will be written to <em>build/alfa/domain/ads</em>  as domain.yaml. This file can be referred to by an Axiomatics Decision Service&#8217;s (ADS) deployment descriptor. See <a href="#Running ADS">[Running ADS]</a>.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -1568,8 +1564,7 @@ In order to run ADS you need a valid software license specified, see <a href="#G
 <div class="sect2">
 <h3 id="_curl_with_json_body">Curl with JSON body</h3>
 <div class="paragraph">
-<p>TBD
-When executing the Gradle test task, if the target is an external ADS, the request and response JSON will be saved in the build directory, see <a href="#RequestAndResponse">Request and responses</a></p>
+<p>When executing the Gradle test task, if the target is an external ADS, the request and response JSON will be saved in the build directory, see <a href="#RequestAndResponse">Request and responses</a>. These traces can be used as templates for application owners or other PEP responsible roles.</p>
 </div>
 </div>
 <div class="sect2">
@@ -1593,14 +1588,6 @@ When executing the Gradle test task, if the target is an external ADS, the reque
 <a href="http://docs.oasis-open.org/xacml/xacml-json-http/v1.0/xacml-json-http-v1.0.html" class="bare">http://docs.oasis-open.org/xacml/xacml-json-http/v1.0/xacml-json-http-v1.0.html</a></p>
 </div>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_running_ads">Running ADS</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>TBD</p>
-</div>
 <div class="sect2">
 <h3 id="_license">License</h3>
 
@@ -1611,10 +1598,10 @@ When executing the Gradle test task, if the target is an external ADS, the reque
 <h2 id="_reference_and_further_documentation">Reference and further documentation</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>TBD</p>
+<p><a href="https://docs.axiomatics.com">Axiomatics product documentation</a></p>
 </div>
 <div class="paragraph">
-<p>More documentation regarding ALFA can be found at <a href="https://axiomatics.github.io/alfa-vscode-doc">https://axiomatics.github.io/alfa-vscode-doc</a>.</p>
+<p><a href="https://axiomatics.github.io/alfa-vscode-doc">https://axiomatics.github.io/alfa-vscode-doc</a> - ALFA language documentation.</p>
 </div>
 <div class="paragraph">
 <p><a href="https://github.com/axiomatics/xacml-3.0-authz-service-openapi-spec">XACML 3.0 Authorization Service - OpenAPI specification</a></p>
