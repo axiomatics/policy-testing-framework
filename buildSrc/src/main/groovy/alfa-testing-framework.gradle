@@ -14,6 +14,13 @@ repositories {
             secretKey = System.env.AXIOMATICS_SECRET_ACCESS_KEY ?: project.findProperty('AXIOMATICS_SECRET_ACCESS_KEY')
         }
     }
+    maven {
+        url "s3://axiomatics-customer-artifacts/release"
+        credentials(AwsCredentials) {
+            accessKey = System.env.AXIOMATICS_ACCESS_KEY_ID ?: project.findProperty('AXIOMATICS_ACCESS_KEY_ID')
+            secretKey = System.env.AXIOMATICS_SECRET_ACCESS_KEY ?: project.findProperty('AXIOMATICS_SECRET_ACCESS_KEY')
+        }
+    }
     //mavenLocal()
 }
 
