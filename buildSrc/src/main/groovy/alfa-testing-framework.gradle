@@ -34,9 +34,12 @@ dependencies {
 
     ads "com.axiomatics.access-decision-service:access-decision-service:1.8.0"
 
-    pip 'com.axiomatics.cr.pip:constant-pip:2022.01.20'
-    pip (group: 'com.axiomatics.cr.pip', name: 'http-pip', version: '2022.01.21-SNAPSHOT')
-    pip (group: 'com.axiomatics.cr.pip', name: 'parser-pip', version: '2022.01.21-SNAPSHOT')
+    pip "com.axiomatics.cr.pip:constant-pip:2022.01.20"
+    pip "com.axiomatics.cr.pip:http-pip:2022.01.21-SNAPSHOT"
+    pip "com.axiomatics.cr.pip:parser-pip:2022.01.21-SNAPSHOT"
+    pip "com.axiomatics.attribute-connectors.sql:sql-attribute-connector:6.2.2"
+    pip "com.axiomatics.attribute-connectors.ldap:ldap-attribute-connector:6.3.0"
+    pip "com.axiomatics.attribute-connectors.table:table-attribute-connector:7.0.0"
 
     alfac group: 'com.axiomatics.alfa', name: 'alfac', version: '1.3.0-SNAPSHOT'
 }
