@@ -1012,7 +1012,7 @@ Note if you are asked to install a Java or JDK, please choose a version listed i
 <div class="sect2">
 <h3 id="_creating_attribute_connectors">Creating attribute connectors</h3>
 <div class="paragraph">
-<p>Attribute Connectors connects the decision service (Axiomatics component ADS or PDP) with external Policy Information Points (PIPs). With the help of attribute connectors our engine can in runtime call out to your directory to eg. fetch a role for a user. It is possible to cache these attribute values.</p>
+<p>Attribute Connectors connects the decision service (Axiomatics component ADS or PDP) with external Policy Information Points (PIPs). With the help of attribute connectors the decision service can in runtime call out to your business services to fetch a user&#8217;s role, for example. It is possible to cache these attribute values.</p>
 </div>
 <div class="admonitionblock important">
 <table>
@@ -1027,28 +1027,268 @@ Based on a value of a key attribute, an attribute connector enables the decision
 </table>
 </div>
 <div class="sect3">
+<h4 id="_attribute_connector_description_file">Attribute Connector description file</h4>
+<div class="paragraph">
+<p>In the authorizationDomain/attributeConnectors directory, create a new Attribute Connector deployment descriptor file.</p>
+</div>
+<div class="listingblock">
+<div class="title">my_connector.configurationString.xml</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">className</span>: <span class="string"><span class="content">&lt;class name&gt;</span></span>
+<span class="key">provides</span>:
+  - <span class="string"><span class="content">&lt;attribute name&gt;</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The table below lists the built in Attribute Connectors available.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribute Connector</th>
+<th class="tableblock halign-left valign-top">Class name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LDAP</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.axiomatics.acs.plugin.pips.ldap.LdapPipModule</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SQL</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.axiomatics.acs.plugin.pips.sql.SqlPipModule</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SQL Table</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.axiomatics.acs.plugin.pips.table.TablePipModule</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Constant</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.axiomatics.cr.pip.constant.ConstantAttributeConnector</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Http (REST or SOAP)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.axiomatics.pip.http.HttpPIP</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Parser (JSON or XML)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.axiomatics.pip.parser.ParserPIP</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The next sections outline example configuration for respective connector. These are just an example and each connector&#8217;s own
+documentation can be consulted for detailed information. See <a href="https://docs.axiomatics.com">docs.axiomatics.com</a> and
+<a href="https://support.axiomatics.com">support.axiomatics.com</a></p>
+</div>
+</div>
+<div class="sect3">
 <h4 id="_ldap">LDAP</h4>
-
+<div class="listingblock">
+<div class="title">my_connector.configurationString.xml</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="preprocessor">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="tag">&lt;pip:configuration</span> <span class="attribute-name">xmlns:pip</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.axiomatics.com/ldap.config</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">xmlns:xsi</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.w3.org/2001/XMLSchema-instance</span><span class="delimiter">&quot;</span></span>
+  <span class="attribute-name">xsi:schemaLocation</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.axiomatics.com/ldap.config ldap.config.xsd </span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+  <span class="tag">&lt;pip:connnection&gt;</span>
+    <span class="tag">&lt;pip:key</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">java.naming.factory.initial</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">value</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">com.sun.jndi.ldap.LdapCtxFactory</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+    <span class="tag">&lt;pip:key</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">java.naming.security.credentials</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">value</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">´${AC_LDAP1_PASSWORD:-secret}</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+    <span class="tag">&lt;pip:key</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">java.naming.security.principal</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">value</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">${AC_LDAP1_USERNAME:-uid=admin,ou=system}</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+    <span class="tag">&lt;pip:key</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">java.naming.security.authentication</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">value</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">simple</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+    <span class="tag">&lt;pip:key</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">java.naming.provider.url</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">value</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">${AC_LDAP1_URL:-ldap://10.0.1.196:10389}</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+  <span class="tag">&lt;/pip:connnection&gt;</span>
+  <span class="tag">&lt;pip:mapping&gt;</span>
+    <span class="tag">&lt;pip:xacmlAttribute</span> <span class="attribute-name">AttributeId</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">acme.role</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">Category</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">urn:oasis:names:tc:xacml:1.0:subject-category:access-subject</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">DataType</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.w3.org/2001/XMLSchema#string</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">Issuer</span>=<span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+    <span class="tag">&lt;pip:nativeAttribute&gt;</span>
+      <span class="tag">&lt;pip:searchSelection&gt;</span>sn<span class="tag">&lt;/pip:searchSelection&gt;</span>
+      <span class="tag">&lt;pip:searchBase&gt;</span>dc=axiomatics,dc=com<span class="tag">&lt;/pip:searchBase&gt;</span>
+      <span class="tag">&lt;pip:searchBaseKey&gt;</span><span class="tag">&lt;pip:xacmlAttribute</span> <span class="attribute-name">AttributeId</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">urn:oasis:names:tc:xacml:1.0:subject:subject-id</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">Category</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">urn:oasis:names:tc:xacml:1.0:subject-category:access-subject</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">DataType</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.w3.org/2001/XMLSchema#string</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">Issuer</span>=<span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span><span class="tag">&lt;/pip:searchBaseKey&gt;</span>
+      <span class="tag">&lt;pip:searchScope&gt;</span>2<span class="tag">&lt;/pip:searchScope&gt;</span>
+      <span class="tag">&lt;pip:searchFilter&gt;</span>cn=?<span class="tag">&lt;/pip:searchFilter&gt;</span>
+      <span class="tag">&lt;pip:key</span> <span class="attribute-name">allowMultiple</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">false</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+        <span class="tag">&lt;pip:xacmlAttribute</span> <span class="attribute-name">AttributeId</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">acme.username</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">Category</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">urn:oasis:names:tc:xacml:1.0:subject-category:access-subject</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">DataType</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.w3.org/2001/XMLSchema#string</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">Issuer</span>=<span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+      <span class="tag">&lt;/pip:key&gt;</span>
+    <span class="tag">&lt;/pip:nativeAttribute&gt;</span>
+  <span class="tag">&lt;/pip:mapping&gt;</span>
+<span class="tag">&lt;/pip:configuration&gt;</span></code></pre>
+</div>
+</div>
 </div>
 <div class="sect3">
 <h4 id="_sql">SQL</h4>
-
+<div class="listingblock">
+<div class="title">my_connector.configurationString.xml</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="preprocessor">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="tag">&lt;cfg:configuration</span> <span class="attribute-name">xmlns:cfg</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.axiomatics.com/jdbc.config</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">xmlns:xsi</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.w3.org/2001/XMLSchema-instance</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">xsi:schemaLocation</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.axiomatics.com/jdbc.config jdbc.config.xsd </span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+  <span class="tag">&lt;cfg:connnection&gt;</span>
+          <span class="tag">&lt;cfg:url&gt;</span>jdbc:postgresql://localhost/usda?user=usda<span class="entity">&amp;amp;</span>password=password<span class="tag">&lt;/cfg:url&gt;</span>
+          <span class="tag">&lt;cfg:driver&gt;</span>org.postgresql.Driver<span class="tag">&lt;/cfg:driver&gt;</span>
+  <span class="tag">&lt;/cfg:connnection&gt;</span>
+  <span class="comment">&lt;!-- mapping for allergy test --&gt;</span>
+  <span class="tag">&lt;cfg:mapping&gt;</span>
+    <span class="tag">&lt;cfg:xacmlAttribute</span> <span class="attribute-name">AttributeId</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">food-group-name</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">Category</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">urn:oasis:names:tc:xacml:3.0:attribute-category:resource</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">DataType</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.w3.org/2001/XMLSchema#string</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">Issuer</span>=<span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+    <span class="tag">&lt;cfg:nativeAttribute&gt;</span>
+      <span class="tag">&lt;cfg:sqlType&gt;</span>2004<span class="tag">&lt;/cfg:sqlType&gt;</span>
+      <span class="tag">&lt;cfg:query&gt;</span>SELECT fddrp_desc FROM fd_group WHERE fdgrp_cd=?<span class="tag">&lt;/cfg:query&gt;</span>
+      <span class="tag">&lt;cfg:key</span> <span class="attribute-name">allowMultiple</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">false</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">sqlType</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">12</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+        <span class="tag">&lt;cfg:xacmlAttribute</span> <span class="attribute-name">AttributeId</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">food-id</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">Category</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">urn:oasis:names:tc:xacml:3.0:attribute-category:resource</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">DataType</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.w3.org/2001/XMLSchema#string</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">Issuer</span>=<span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+      <span class="tag">&lt;/cfg:key&gt;</span>
+    <span class="tag">&lt;/cfg:nativeAttribute&gt;</span>
+    <span class="tag">&lt;cfg:uId&gt;</span>1<span class="tag">&lt;/cfg:uId&gt;</span>
+  <span class="tag">&lt;/cfg:mapping&gt;</span>
+  <span class="comment">&lt;!--  mapping for journal reading --&gt;</span>
+  <span class="tag">&lt;cfg:mapping&gt;</span>
+    <span class="tag">&lt;cfg:xacmlAttribute</span> <span class="attribute-name">AttributeId</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">issue-year</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">Category</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">urn:oasis:names:tc:xacml:3.0:attribute-category:resource</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">DataType</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.w3.org/2001/XMLSchema#integer</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">Issuer</span>=<span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+    <span class="tag">&lt;cfg:nativeAttribute&gt;</span>
+      <span class="tag">&lt;cfg:sqlType&gt;</span>4<span class="tag">&lt;/cfg:sqlType&gt;</span>
+      <span class="tag">&lt;cfg:query&gt;</span>SELECT year FROM data_src WHERE datasrc_id=?<span class="tag">&lt;/cfg:query&gt;</span>
+      <span class="tag">&lt;cfg:key</span> <span class="attribute-name">allowMultiple</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">false</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">sqlType</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">12</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+        <span class="tag">&lt;cfg:xacmlAttribute</span> <span class="attribute-name">AttributeId</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">urn:oasis:names:tc:xacml:1.0:resource:resource-id</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">Category</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">urn:oasis:names:tc:xacml:3.0:attribute-category:resource</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">DataType</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.w3.org/2001/XMLSchema#string</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">Issuer</span>=<span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+      <span class="tag">&lt;/cfg:key&gt;</span>
+    <span class="tag">&lt;/cfg:nativeAttribute&gt;</span>
+    <span class="tag">&lt;cfg:uId&gt;</span>2<span class="tag">&lt;/cfg:uId&gt;</span>
+  <span class="tag">&lt;/cfg:mapping&gt;</span>
+  <span class="tag">&lt;cfg:mapping&gt;</span>
+    <span class="tag">&lt;cfg:xacmlAttribute</span> <span class="attribute-name">AttributeId</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">journal-name</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">Category</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">urn:oasis:names:tc:xacml:3.0:attribute-category:resource</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">DataType</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.w3.org/2001/XMLSchema#string</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">Issuer</span>=<span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+    <span class="tag">&lt;cfg:nativeAttribute&gt;</span>
+      <span class="tag">&lt;cfg:sqlType&gt;</span>2004<span class="tag">&lt;/cfg:sqlType&gt;</span>
+      <span class="tag">&lt;cfg:query&gt;</span>SELECT journal FROM data_src WHERE datasrc_id=? GROUP BY journal<span class="tag">&lt;/cfg:query&gt;</span>
+      <span class="tag">&lt;cfg:key</span> <span class="attribute-name">allowMultiple</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">false</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">sqlType</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">12</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+        <span class="tag">&lt;cfg:xacmlAttribute</span> <span class="attribute-name">AttributeId</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">urn:oasis:names:tc:xacml:1.0:resource:resource-id</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">Category</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">urn:oasis:names:tc:xacml:3.0:attribute-category:resource</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">DataType</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.w3.org/2001/XMLSchema#string</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">Issuer</span>=<span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+      <span class="tag">&lt;/cfg:key&gt;</span>
+    <span class="tag">&lt;/cfg:nativeAttribute&gt;</span>
+    <span class="tag">&lt;cfg:uId&gt;</span>3<span class="tag">&lt;/cfg:uId&gt;</span>
+  <span class="tag">&lt;/cfg:mapping&gt;</span>
+  <span class="tag">&lt;cfg:mapping&gt;</span>
+    <span class="tag">&lt;cfg:xacmlAttribute</span> <span class="attribute-name">AttributeId</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">subscribed-journal</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">Category</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">urn:oasis:names:tc:xacml:1.0:subject-category:access-subject</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">DataType</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.w3.org/2001/XMLSchema#string</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">Issuer</span>=<span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+    <span class="tag">&lt;cfg:nativeAttribute&gt;</span>
+      <span class="tag">&lt;cfg:sqlType&gt;</span>2004<span class="tag">&lt;/cfg:sqlType&gt;</span>
+      <span class="tag">&lt;cfg:query&gt;</span>SELECT journal FROM data_src WHERE journal LIKE 'Journal of%'<span class="tag">&lt;/cfg:query&gt;</span>
+    <span class="tag">&lt;/cfg:nativeAttribute&gt;</span>
+    <span class="tag">&lt;cfg:uId&gt;</span>4<span class="tag">&lt;/cfg:uId&gt;</span>
+  <span class="tag">&lt;/cfg:mapping&gt;</span>
+  <span class="comment">&lt;!--  mapping for null bit test --&gt;</span>
+  <span class="tag">&lt;cfg:mapping&gt;</span>
+    <span class="tag">&lt;cfg:xacmlAttribute</span> <span class="attribute-name">AttributeId</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">food_bit</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">Category</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">urn:oasis:names:tc:xacml:3.0:attribute-category:resource</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">DataType</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.w3.org/2001/XMLSchema#string</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">Issuer</span>=<span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+    <span class="tag">&lt;cfg:nativeAttribute&gt;</span>
+      <span class="tag">&lt;cfg:sqlType&gt;</span>-7<span class="tag">&lt;/cfg:sqlType&gt;</span>
+      <span class="tag">&lt;cfg:query&gt;</span>SELECT food_bit FROM fd_group WHERE fdgrp_cd=?<span class="tag">&lt;/cfg:query&gt;</span>
+      <span class="tag">&lt;cfg:key</span> <span class="attribute-name">allowMultiple</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">false</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">sqlType</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">12</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+        <span class="tag">&lt;cfg:xacmlAttribute</span> <span class="attribute-name">AttributeId</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">food-id</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">Category</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">urn:oasis:names:tc:xacml:3.0:attribute-category:resource</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">DataType</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.w3.org/2001/XMLSchema#string</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">Issuer</span>=<span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+      <span class="tag">&lt;/cfg:key&gt;</span>
+    <span class="tag">&lt;/cfg:nativeAttribute&gt;</span>
+    <span class="tag">&lt;cfg:uId&gt;</span>5<span class="tag">&lt;/cfg:uId&gt;</span>
+  <span class="tag">&lt;/cfg:mapping&gt;</span>
+<span class="tag">&lt;/cfg:configuration&gt;</span></code></pre>
+</div>
+</div>
 </div>
 <div class="sect3">
 <h4 id="_sql_table">SQL Table</h4>
+<div class="listingblock">
+<div class="title">my_connector.configurationString.xml</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="preprocessor">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="tag">&lt;cfg:configuration</span> <span class="attribute-name">xmlns:cfg</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.axiomatics.com/table.config</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">xmlns:xsi</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.w3.org/2001/XMLSchema-instance</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">xsi:schemaLocation</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.axiomatics.com/table.config table.config.xsd </span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+  <span class="tag">&lt;cfg:connnection&gt;</span>
+          <span class="tag">&lt;cfg:url&gt;</span>jdbc:postgresql://localhost/usda?user=usda<span class="entity">&amp;amp;</span>password=password<span class="tag">&lt;/cfg:url&gt;</span>
+          <span class="tag">&lt;cfg:driver&gt;</span>org.postgresql.Driver<span class="tag">&lt;/cfg:driver&gt;</span>
+  <span class="tag">&lt;/cfg:connnection&gt;</span>
 
+  <span class="comment">&lt;!-- mapping for allergy test --&gt;</span>
+  <span class="tag">&lt;cfg:mapping</span> <span class="attribute-name">isSingleValued</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">false</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+    <span class="tag">&lt;cfg:xacmlAttribute</span> <span class="attribute-name">AttributeId</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">food-group-name</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">Category</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">urn:oasis:names:tc:xacml:3.0:attribute-category:resource</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">DataType</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.w3.org/2001/XMLSchema#string</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">Issuer</span>=<span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+         <span class="tag">&lt;cfg:tableName&gt;</span>food-group-table<span class="tag">&lt;/cfg:tableName&gt;</span>
+         <span class="tag">&lt;cfg:columnName&gt;</span>food-group-name<span class="tag">&lt;/cfg:columnName&gt;</span>
+    <span class="tag">&lt;cfg:key</span> <span class="attribute-name">allowMultiple</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">false</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+        <span class="tag">&lt;cfg:xacmlAttribute</span> <span class="attribute-name">AttributeId</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">food-id</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">Category</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">urn:oasis:names:tc:xacml:3.0:attribute-category:resource</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">DataType</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.w3.org/2001/XMLSchema#string</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">Issuer</span>=<span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+        <span class="tag">&lt;cfg:columnName&gt;</span>food-id<span class="tag">&lt;/cfg:columnName&gt;</span>
+    <span class="tag">&lt;/cfg:key&gt;</span>
+    <span class="tag">&lt;cfg:uId&gt;</span>1<span class="tag">&lt;/cfg:uId&gt;</span>
+  <span class="tag">&lt;/cfg:mapping&gt;</span>
+
+<span class="tag">&lt;/cfg:configuration&gt;</span></code></pre>
+</div>
+</div>
 </div>
 <div class="sect3">
 <h4 id="_http_restjson_or_wssoap">HTTP (REST/JSON or WS/SOAP)</h4>
-
+<div class="sect4">
+<h5 id="_http">HTTP</h5>
+<div class="listingblock">
+<div class="title">my_connector.configurationString.xml</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="preprocessor">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="tag">&lt;configuration</span> <span class="attribute-name">xmlns</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.axiomatics.com/http.config</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">identifier</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">sample-unique-id</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+        <span class="tag">&lt;connection&gt;</span>
+                <span class="tag">&lt;url&gt;</span>http://jsonplaceholder.typicode.com/posts/{0}<span class="tag">&lt;/url&gt;</span>
+            <span class="tag">&lt;connectionKey&gt;</span>
+                    <span class="tag">&lt;xacmlAttribute</span> <span class="attribute-name">Category</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">urn:oasis:names:tc:xacml:1.0:subject-category:access-subject</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">AttributeId</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">com.acme.user.employeeId</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">DataType</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.w3.org/2001/XMLSchema#string</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">Issuer</span>=<span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+            <span class="tag">&lt;/connectionKey&gt;</span>
+                <span class="tag">&lt;method&gt;</span>GET<span class="tag">&lt;/method&gt;</span>
+        <span class="tag">&lt;/connection&gt;</span>
+        <span class="tag">&lt;mapping&gt;</span>
+                <span class="tag">&lt;xacmlAttribute</span> <span class="attribute-name">Category</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">urn:oasis:names:tc:xacml:1.0:subject-category:access-subject</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">AttributeId</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">pip.payload</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">DataType</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.w3.org/2001/XMLSchema#string</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">Issuer</span>=<span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+                <span class="tag">&lt;contentType&gt;</span>application/json<span class="tag">&lt;/contentType&gt;</span>
+        <span class="tag">&lt;/mapping&gt;</span>
+<span class="tag">&lt;/configuration&gt;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_parser">Parser</h5>
+<div class="listingblock">
+<div class="title">my_connector.configurationString.xml</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="preprocessor">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="tag">&lt;configuration</span> <span class="attribute-name">xmlns</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.axiomatics.com/parser.config</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">identifier</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">example-pip</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+        <span class="tag">&lt;mapping&gt;</span>
+                <span class="tag">&lt;xacmlAttribute</span> <span class="attribute-name">Category</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">urn:oasis:names:tc:xacml:1.0:subject-category:access-subject</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">AttributeId</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">pip.status</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">DataType</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.w3.org/2001/XMLSchema#string</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">Issuer</span>=<span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+                <span class="tag">&lt;expression&gt;</span>$.title<span class="tag">&lt;/expression&gt;</span>
+                <span class="tag">&lt;payload</span> <span class="attribute-name">contentType</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">JSON</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+                        <span class="tag">&lt;xacmlAttribute</span> <span class="attribute-name">Category</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">urn:oasis:names:tc:xacml:1.0:subject-category:access-subject</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">AttributeId</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">pip.payload</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">DataType</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.w3.org/2001/XMLSchema#string</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">Issuer</span>=<span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+                <span class="tag">&lt;/payload&gt;</span>
+        <span class="tag">&lt;/mapping&gt;</span>
+<span class="tag">&lt;/configuration&gt;</span></code></pre>
+</div>
+</div>
+</div>
 </div>
 <div class="sect3">
 <h4 id="_constant">Constant</h4>
-
+<div class="listingblock">
+<div class="title">my_connector.configurationString.yaml</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">mappings</span>:
+  - <span class="string"><span class="content">destination:</span><span class="content">
+      category: AccessSubject
+      datatype: string
+      id: user.role</span></span>
+    <span class="key">dictionary</span>:
+      <span class="key">martin</span>: <span class="string"><span class="content">manager</span></span>
+      <span class="key">cecilia</span>: <span class="string"><span class="content">consultant</span></span>
+    <span class="key">source</span>:
+      <span class="key">category</span>: <span class="string"><span class="content">AccessSubject</span></span>
+      <span class="key">datatype</span>: <span class="string"><span class="content">string</span></span>
+      <span class="key">id</span>: <span class="string"><span class="content">user.identity</span></span></code></pre>
+</div>
+</div>
 </div>
 <div class="sect3">
 <h4 id="_attribute_value_caching">Attribute value caching</h4>
-
+<div class="listingblock">
+<div class="title">attributeCache.yaml</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">user.role</span>:
+  <span class="key">timeToLive</span>: <span class="string"><span class="content">1 day</span></span>
+  <span class="key">maxItems</span>: <span class="string"><span class="content">1000</span></span></code></pre>
+</div>
+</div>
 </div>
 </div>
 </div>
