@@ -8,7 +8,7 @@ def myErrOut = new ByteArrayOutputStream();
 repositories {
     mavenCentral()
     maven {
-        url "s3://axiomatics-cr-maven/release"
+        url "s3://axiomatics-cr-maven/releases"
         credentials(AwsCredentials) {
             accessKey = System.env.AXIOMATICS_ACCESS_KEY_ID ?: project.findProperty('AXIOMATICS_ACCESS_KEY_ID')
             secretKey = System.env.AXIOMATICS_SECRET_ACCESS_KEY ?: project.findProperty('AXIOMATICS_SECRET_ACCESS_KEY')
