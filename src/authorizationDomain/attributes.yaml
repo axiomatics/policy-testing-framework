@@ -2,10 +2,6 @@ user.identity:
   xacmlId: user.identity
   category: AccessSubject
   datatype: string
-user.department:
-  xacmlId: user.department
-  category: AccessSubject
-  datatype: string
 user.role:
   xacmlId: user.role
   category: AccessSubject
