@@ -56,7 +56,7 @@ public class AlfaStandaloneJavaGenerator {
             resource = (Resource)var5.next();
             List<Issue> list = validator.validate(resource, CheckMode.ALL, CancelIndicator.NullImpl);
             if (!list.isEmpty()) {
-              reuturn list
+              return list
             }
         }
 
