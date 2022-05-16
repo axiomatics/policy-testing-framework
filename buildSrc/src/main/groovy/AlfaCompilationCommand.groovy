@@ -25,14 +25,14 @@ class AlfaCompilationCommand extends org.gradle.api.DefaultTask implements Runna
             List<Issue> issues = getLanguage().run(collect, out)
 
             if (!issues.isEmpty()) {
-                System.err.println("ERROR:" + issues.size() + " Alfa errors")
+                System.err.println("ERROR: " + issues.size() + " Alfa error(s) occurred during build:")
                 Iterator var8 = issues.iterator();
 
                 while (var8.hasNext()) {
                     Issue issue = (Issue) var8.next();
                     System.err.println(prettyPrint(issue));
                 }
-                throw new StopExecutionException(issues.size() + " Alfa errors")
+                throw new StopExecutionException("Build failed due to Alfa error(s)")
             }
 
         } catch (StopExecutionException e) {
