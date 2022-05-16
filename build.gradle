@@ -2,9 +2,6 @@ plugins {
     id 'alfa-testing-framework'
 }
 
-repositories {
-}
-
 version = '1.0'
 group = 'com.myorg.alfa'
 
@@ -13,6 +10,7 @@ alfa {
     licenseFile = "license/axiomatics_PDP.license"
 }
 dependencies {
+        // ads files('truststore.jks') //Add extra files for Ads and Docker image
 }
 
 test {

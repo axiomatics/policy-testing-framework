@@ -514,9 +514,9 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_openapi">OpenAPI</a></li>
 <li><a href="#_sample_ava_pep_implementation">Sample ava PEP implementation</a></li>
 <li><a href="#_reference_documentation">Reference documentation</a></li>
-<li><a href="#_license">License</a></li>
 </ul>
 </li>
+<li><a href="#_docker">Docker</a></li>
 <li><a href="#_reference_and_further_documentation">Reference and further documentation</a></li>
 </ul>
 </div>
@@ -1839,9 +1839,53 @@ In order to run ADS you need a valid software license specified, see <a href="#G
 <a href="http://docs.oasis-open.org/xacml/xacml-json-http/v1.0/xacml-json-http-v1.0.html" class="bare">http://docs.oasis-open.org/xacml/xacml-json-http/v1.0/xacml-json-http-v1.0.html</a></p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_license">License</h3>
-
+</div>
+</div>
+<div class="sect1">
+<h2 id="_docker">Docker</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A Docker image can be built with task <em>buildAdsDockerImage</em>. The image will be tagged '&lt;project-name&gt;:latest' in the local default registry. To push it to a remote repository, tag it for a remote repository and push it:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>docker tag my-alfa-project:latest myRemoteRegistry.com/my-alfa-project:1.0
+docker push myRemoteRegistry.com/my-alfa-project:1.0</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <a href="https://github.com/palantir/gradle-docker">com.palantir.gradle.docker</a> plugin is used to build the image.
+The image will be built use the Dockerfile in the project root. You can customize it if you need.</p>
+</div>
+<div class="paragraph">
+<p>By default, the following files are included in the docker image:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Configurations (dependencies) <em>ads</em> and <em>pip</em></p>
+</li>
+<li>
+<p>Ads license file</p>
+</li>
+<li>
+<p>deployment.yaml</p>
+</li>
+<li>
+<p>The authorization domain (policies and attribute connectors)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>If you need any additional files, add them on the <em>ads</em> configration, for example:</p>
+</div>
+<div class="listingblock">
+<div class="title">build.gradle</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">dependencies {
+         ads files(<span class="string"><span class="delimiter">'</span><span class="content">truststore.jks</span><span class="delimiter">'</span></span>)
+}</code></pre>
+</div>
 </div>
 </div>
 </div>
