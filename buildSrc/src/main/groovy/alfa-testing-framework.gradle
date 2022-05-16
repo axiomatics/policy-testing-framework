@@ -1,5 +1,7 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
+import com.axiomatics.domtool.cli.ConfigurableDomainCommand
+
 
 def prefix = "http://axiomatics.com/alfa/identifier/"
 
@@ -48,30 +50,8 @@ dependencies {
     pip "com.axiomatics.attribute-connectors.ldap:ldap-attribute-connector:6.3.0@jar"
     pip "com.axiomatics.attribute-connectors.table:table-attribute-connector:7.0.0@jar"
 
-    alfac group: 'com.axiomatics.alfa', name: 'alfac', version: '1.3.0-SNAPSHOT'
-}
+    alfac "com.axiomatics.alfa:alfac:1.3.0-SNAPSHOT"
 
-task compileAlfa(type: JavaExec) {
-    outputs.files fileTree("${buildDir}/alfa/domain/xacmlSpecifications")
-    doFirst {
-        project.delete( fileTree("${buildDir}/alfa/domain/xacmlSpecifications/"))
-        def inputDir = "${projectDir}/${project.extensions.alfa.srcDir}"
-        if (!new File(inputDir).isDirectory()) {
-            throw new GradleException("alfa.srcDir is not set or does not exist: ${new File(inputDir).getAbsolutePath()}")
-        }
-        myErrOut = new MyLogger();
-        errorOutput myErrOut
-        workingDir inputDir
-        args "alfaSpecifications", "-o", "${buildDir}/alfa/domain/xacmlSpecifications"
-        classpath = project.configurations.alfac
-    }
-
-    group = "axiomatics"
-    mainClass = "com.axiomatics.alfa.cli.Main"
-    jvmArgs "--illegal-access=permit"
-    doLast {
-        myErrOut.flush()
-    }
 }
 
 task compileAlfaToPackage(type: JavaExec) {
@@ -88,7 +68,6 @@ task compileAlfaToPackage(type: JavaExec) {
                 '-p', "${buildDir}/alfa/domain/package/policy_package.zip",
                 '-m', "${project.extensions.alfa.mainpolicy}"
     }
-
     mainClass = "com.axiomatics.alfa.cli.Main"
     group = "axiomatics"
     classpath = project.configurations.alfac
@@ -98,22 +77,6 @@ task compileAlfaToPackage(type: JavaExec) {
     }
 }
 
-task buildAuthzDomain(type: JavaExec) {
-    outputs.files fileTree("${buildDir}/alfa/domain/ads")
-    doFirst {
-        def mainPolicy = inputs.properties.mainPolicy
-        def srcDir = inputs.properties.srcDir
-        def xmlPolicies = inputs.properties.xmlPolicies
-        args 'domain',
-                '--input', srcDir,
-                '--main-policy-id', prefix + mainPolicy,
-                "--xacml-specifications=${xmlPolicies}",
-                '--output', "${buildDir}/alfa/domain/ads/domain.yaml"
-    }
-    group = "axiomatics"
-    classpath = project.configurations.domTool
-    mainClass = "com.axiomatics.domtool.cli.DomTool"
-}
 
 task prepareDirs {
     mkdir "${buildDir}/alfa/domain/package"
@@ -154,12 +117,13 @@ task runAds(type: JavaExec) {
         println myErrOut.flush()
     }
 }
-task stageAdsFiles {
+task stageAdsFiles {}
+task buildAdsDockerImage {
     group = "axiomatics"
 }
 
-buildAuthzDomain.dependsOn compileAlfa
-stageAdsFiles.dependsOn buildAuthzDomain
+
+
 stageAdsFiles.dependsOn stageDeploymentDescriptor
 stageAdsFiles.dependsOn stageLicenseFile
 runAds.dependsOn stageAdsFiles
@@ -178,15 +142,25 @@ class AlfaPlugin implements Plugin<Project> {
         def accessKey = System.env.AXIOMATICS_ACCESS_KEY_ID ?: project.findProperty('AXIOMATICS_ACCESS_KEY_ID')
         def secretKey = System.env.AXIOMATICS_SECRET_ACCESS_KEY ?: project.findProperty('AXIOMATICS_SECRET_ACCESS_KEY')
         if (
-                accessKey.equals("Put the key id provided by Axiomatics here!") ||
-                        secretKey.equals("Put the secret key provided by Axiomatics here!")
+        accessKey.equals("Put the key id provided by Axiomatics here!") ||
+                secretKey.equals("Put the secret key provided by Axiomatics here!")
         ) {
             throw new GradleException("Credential to Axiomatics repository not set. Please set credentials provided by Axiomatics in file gradle.properties or as environment variables. " +
                     "If you have not received the credentials, contact your Axiomatics support")
         }
         project.extensions.create('alfa', AlfaExtension)
         project.plugins.apply('java')
+        project.plugins.apply('distribution')
+        project.getPluginManager().apply("com.palantir.docker")
+        project.tasks.register("buildAuthzDomain", BuildAuthZDomainTask.class) {
+            group "axiomatics"
+        }
+        project.tasks.register("compileAlfa", AlfaCompilationCommand.class) {
+            group "axiomatics"
+        }
+
         project.afterEvaluate {
+            def alfa = project.extensions.alfa
             def srcFile = "${it.rootDir}/${project.extensions.alfa.deploymentDescriptor}"
             if (! new File(srcFile).exists()) {
                 throw new GradleException("alfa.deploymentdescriptor does not exist: ${srcFile}")
@@ -212,15 +186,15 @@ class AlfaPlugin implements Plugin<Project> {
                 }
             }
             project.tasks.compileAlfa {
-                inputs.property("srcDir",project.extensions.alfa.srcDir )
-                inputs.files project.fileTree(project.extensions.alfa.srcDir).matching {include "**/*.alfa"}
+                inputs.files project.fileTree("src/authorizationDomain/alfaSpecifications")
+                outputs.dir project.file("build/alfa/domain/xacmlSpecifications")
             }
             project.tasks.buildAuthzDomain {
-                inputs.property("mainPolicy", project.extensions.alfa.mainpolicy )
-                inputs.property("srcDir",project.extensions.alfa.srcDir )
-                inputs.property("xmlPolicies", "${project.buildDir}/alfa/domain/xacmlSpecifications" )
-                inputs.files project.fileTree(project.extensions.alfa.srcDir)
-                inputs.files project.fileTree("${project.buildDir}/alfa/domain/xacmlSpecifications")
+                xmlPolicies = project.fileTree("${project.buildDir}/alfa/domain/xacmlSpecifications")
+                srcDir = project.fileTree(project.extensions.alfa.srcDir)
+                mainPolicy  project.extensions.alfa.mainpolicy
+                outputYamlFile = project.file("${project.buildDir}/alfa/domain/ads/domain.yaml")
+
             }
             project.tasks.stageLicenseFile {
                 def ilicenseFile = project.extensions.alfa.licenseFile
@@ -233,6 +207,25 @@ class AlfaPlugin implements Plugin<Project> {
                 outputs.files project.file("${idstDir}/${filename}")
 
             }
+            project.extensions.distributions.main {
+                contents {
+                    into ('lib')    { from  project.configurations.ads }
+                    into ('domain') { from  project.buildAuthzDomain,
+                            alfa.licenseFile,
+                            alfa.deploymentDescriptor
+                    }
+
+                }
+            }
+            def docker = project.extensions.docker
+            docker.files project.installDist.outputs
+            docker.name  project.name
+
+            project.tasks.stageAdsFiles.dependsOn project.tasks.buildAuthzDomain
+            project.tasks.buildAuthzDomain.dependsOn project.tasks.compileAlfa
+            project.tasks.dockerPrepare.dependsOn project.tasks.installDist
+            project.tasks.buildAdsDockerImage.dependsOn project.tasks.docker
+
         } //after evaluate
     }
 }
@@ -245,4 +238,30 @@ class MyLogger extends ByteArrayOutputStream {
         reset();
     }
 }
+
+class BuildAuthZDomainTask extends DefaultTask {
+
+    @InputFiles
+    FileTree srcDir
+
+    @InputFiles
+    FileTree xmlPolicies
+
+    @OutputFile
+    File outputYamlFile
+
+    @Input
+    String mainPolicy
+
+    @TaskAction
+    execute() {
+        def command = new ConfigurableDomainCommand();
+        command.srcDir = srcDir;
+        command.xmlPolicies = xmlPolicies;
+        command.mainPolicy = mainPolicy;
+        command.outputYamlFile = outputYamlFile
+        command.call();
+    }
+}
+
 
