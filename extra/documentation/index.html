@@ -1926,17 +1926,21 @@ The image will be built use the Dockerfile in the project root. You can customiz
 <div class="title">build.gradle</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="groovy">task pushToAdm(<span class="key">type</span>: AdmPush) {
-    client_id <span class="string"><span class="delimiter">'</span><span class="content">ads1</span><span class="delimiter">'</span></span> <b class="conum">(1)</b>
-    client_secret <span class="string"><span class="delimiter">'</span><span class="content">wBGbr79PXG3cyjgmFpJWMqnK842k3ene</span><span class="delimiter">'</span></span> <b class="conum">(2)</b>
-    tokenUri <span class="string"><span class="delimiter">&quot;</span><span class="content">https://asm.acme.com/auth/realms/asm/protocol/openid-connect/token</span><span class="delimiter">&quot;</span></span><b class="conum">(3)</b>
-    url <span class="string"><span class="delimiter">&quot;</span><span class="content">https://asm.acme.com/adm/api</span><span class="delimiter">&quot;</span></span><b class="conum">(4)</b>
-    namespace <span class="string"><span class="delimiter">'</span><span class="content">MyProject</span><span class="delimiter">'</span></span> <b class="conum">(5)</b>
-    domain <span class="string"><span class="delimiter">'</span><span class="content">MyDomain</span><span class="delimiter">'</span></span><b class="conum">(6)</b>
+    group <span class="string"><span class="delimiter">'</span><span class="content">axiomatics</span><span class="delimiter">'</span></span> <b class="conum">(1)</b>
+    client_id <span class="string"><span class="delimiter">'</span><span class="content">ads1</span><span class="delimiter">'</span></span> <b class="conum">(2)</b>
+    client_secret <span class="string"><span class="delimiter">'</span><span class="content">wBGbr79PXG3cyjgmFpJWMqnK842k3ene</span><span class="delimiter">'</span></span> <b class="conum">(3)</b>
+    tokenUri <span class="string"><span class="delimiter">&quot;</span><span class="content">https://asm.acme.com/auth/realms/asm/protocol/openid-connect/token</span><span class="delimiter">&quot;</span></span><b class="conum">(4)</b>
+    url <span class="string"><span class="delimiter">&quot;</span><span class="content">https://asm.acme.com/adm/api</span><span class="delimiter">&quot;</span></span><b class="conum">(5)</b>
+    namespace <span class="string"><span class="delimiter">'</span><span class="content">MyProject</span><span class="delimiter">'</span></span> <b class="conum">(6)</b>
+    domain <span class="string"><span class="delimiter">'</span><span class="content">MyDomain</span><span class="delimiter">'</span></span><b class="conum">(7)</b>
 }</code></pre>
 </div>
 </div>
 <div class="colist arabic">
 <ol>
+<li>
+<p>Place this new task under in the Axiomatics group</p>
+</li>
 <li>
 <p>client id to use for Keycloak authentication</p>
 </li>
