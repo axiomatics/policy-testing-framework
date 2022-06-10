@@ -31,10 +31,17 @@ class AdmPush extends org.gradle.api.DefaultTask implements Runnable {
     @org.gradle.api.tasks.Internal
     String newDomainId
 
+    @org.gradle.api.tasks.Input
+    @org.gradle.api.tasks.Optional
+    Boolean onlyPrintAccessToken = false
+
     @TaskAction
     void run() {
         def accessToken = doOIDCLoginAndGetAccessToken()
-        //println accessToken
+        if (onlyPrintAccessToken) {
+            println "ASM access token obtained, no push made to remote server:\n${accessToken}"
+            return
+        }
 
        def body = makeBody()
 
