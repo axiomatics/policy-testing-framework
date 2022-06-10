@@ -235,9 +235,6 @@ class AlfaPlugin implements Plugin<Project> {
             docker.files project.installDist.outputs
             docker.name  project.extensions.alfa.dockerName == null ? project.name : project.extensions.alfa.dockerName
 
-
-println "NAME ${docker.name}"
-
             project.tasks.stageAdsFiles.dependsOn project.tasks.buildAuthzDomain
             project.tasks.buildAuthzDomain.dependsOn project.tasks.compileAlfa
             project.tasks.dockerPrepare.dependsOn project.tasks.installDist
