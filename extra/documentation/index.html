@@ -440,7 +440,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>ALFA Testing framework</h1>
 <div class="details">
-<span id="revnumber">version 1.0.6</span>
+<span id="revnumber">version 1.0.8</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -517,6 +517,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </ul>
 </li>
 <li><a href="#_docker">Docker</a></li>
+<li><a href="#_axiomatics_service_manager_integration">Axiomatics Service Manager integration</a></li>
 <li><a href="#_reference_and_further_documentation">Reference and further documentation</a></li>
 </ul>
 </div>
@@ -575,6 +576,15 @@ Please note that this project currently needs to be run with Java 11.
 <li>
 <p>Supports externalizing logical configuration (parametrized tests) to the environment, to be able to handle different test data sets in different environments</p>
 </li>
+<li>
+<p>Resolve external policies from Maven-like repository</p>
+</li>
+<li>
+<p>Building a docker image</p>
+</li>
+<li>
+<p>Push a domain to Axiomatics Service Manager or Axiomatics Domain Manager</p>
+</li>
 </ul>
 </div>
 <div class="paragraph">
@@ -607,10 +617,14 @@ Please note that this project currently needs to be run with Java 11.
 <td class="tableblock halign-left valign-top"><p class="tableblock">1.0.6</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Fixed NPE due to missing method implementation in context stub class</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.0.8</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Added possibility to resolve external policies via configuration <em>policy</em>. Added possibity to push domain to ASM.</p></td>
+</tr>
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation last update: 2022-04-05</p>
+<p>Documentation last update: 2022-06-10</p>
 </div>
 </div>
 </div>
@@ -1659,6 +1673,9 @@ com.myorg.alfa.MySystemTest &gt; shouldNotGiveCeciliaAccessToResource2 PASSED</c
     licenseFile = &quot;license/axiomatics_PDP.license&quot; // <b class="conum">(2)</b>
 }
 dependencies { // <b class="conum">(3)</b>
+
+    policy &quot;com.acme:globalPolicy:1.0@alfa // <b class="conum">(4)</b>
+    ads files('truststore.jks') // <b class="conum">(5)</b>
 }</code></pre>
 </div>
 </div>
@@ -1672,6 +1689,12 @@ dependencies { // <b class="conum">(3)</b>
 </li>
 <li>
 <p><a href="#DependencyConfiguration">Dependency Configuration</a></p>
+</li>
+<li>
+<p>External policies can be put on configuration policy. Note that <em>@alfa</em> is needed</p>
+</li>
+<li>
+<p>Extra runtime dependencies, such as keystores, can be put on <em>ads</em> configuration</p>
 </li>
 </ol>
 </div>
@@ -1774,7 +1797,8 @@ In order to run ADS you need a valid software license specified, see <a href="#G
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ads</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Any additional dependencies for running ADS.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Any additional dependencies for running ADS.
+     policy</p></td>
 </tr>
 </tbody>
 </table>
@@ -1845,7 +1869,7 @@ In order to run ADS you need a valid software license specified, see <a href="#G
 <h2 id="_docker">Docker</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>A Docker image can be built with task <em>buildAdsDockerImage</em>. The image will be tagged '&lt;project-name&gt;:latest' in the local default registry. To push it to a remote repository, tag it for a remote repository and push it:</p>
+<p>A Docker image can be built with task <em>buildAdsDockerImage</em>. The image will be tagged '&lt;project-name&gt;:latest' in the local default registry. To push it to a remote repository, tag it for a remote repository and push it like this:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1863,7 +1887,7 @@ The image will be built use the Dockerfile in the project root. You can customiz
 <div class="ulist">
 <ul>
 <li>
-<p>Configurations (dependencies) <em>ads</em> and <em>pip</em></p>
+<p>Configurations (dependencies) <em>ads</em>, <em>policy</em> and <em>pip</em></p>
 </li>
 <li>
 <p>Ads license file</p>
@@ -1877,7 +1901,7 @@ The image will be built use the Dockerfile in the project root. You can customiz
 </ul>
 </div>
 <div class="paragraph">
-<p>If you need any additional files, add them on the <em>ads</em> configration, for example:</p>
+<p>If you need any additional files, add them on the <em>ads</em> configuration, for example:</p>
 </div>
 <div class="listingblock">
 <div class="title">build.gradle</div>
@@ -1886,6 +1910,62 @@ The image will be built use the Dockerfile in the project root. You can customiz
          ads files(<span class="string"><span class="delimiter">'</span><span class="content">truststore.jks</span><span class="delimiter">'</span></span>)
 }</code></pre>
 </div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_axiomatics_service_manager_integration">Axiomatics Service Manager integration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The authorization domain can be pushed to Axiomatics Service Manager (ASM) 7 via the Axiomatics Domain Manager API (ADM)</p>
+</div>
+<div class="paragraph">
+<p>To push the domain to ASM add a new task in the build.gradle file:</p>
+</div>
+<div class="listingblock">
+<div class="title">build.gradle</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">task pushToAdm(<span class="key">type</span>: AdmPush) {
+    client_id <span class="string"><span class="delimiter">'</span><span class="content">ads1</span><span class="delimiter">'</span></span> <b class="conum">(1)</b>
+    client_secret <span class="string"><span class="delimiter">'</span><span class="content">wBGbr79PXG3cyjgmFpJWMqnK842k3ene</span><span class="delimiter">'</span></span> <b class="conum">(2)</b>
+    tokenUri <span class="string"><span class="delimiter">&quot;</span><span class="content">https://asm.acme.com/auth/realms/asm/protocol/openid-connect/token</span><span class="delimiter">&quot;</span></span><b class="conum">(3)</b>
+    url <span class="string"><span class="delimiter">&quot;</span><span class="content">https://asm.acme.com/adm/api</span><span class="delimiter">&quot;</span></span><b class="conum">(4)</b>
+    namespace <span class="string"><span class="delimiter">'</span><span class="content">MyProject</span><span class="delimiter">'</span></span> <b class="conum">(5)</b>
+    domain <span class="string"><span class="delimiter">'</span><span class="content">MyDomain</span><span class="delimiter">'</span></span><b class="conum">(6)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>client id to use for Keycloak authentication</p>
+</li>
+<li>
+<p>client secret to use for Keycloak authentication</p>
+</li>
+<li>
+<p>Keycloak authorization endpoint</p>
+</li>
+<li>
+<p>ADM API endpoint</p>
+</li>
+<li>
+<p>Namespace to push to</p>
+</li>
+<li>
+<p>Domain to push to</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>It is possible to create multiple tasks that pushes to different namespaces or domains if you want to upload the domain to different target environments (such as test or prod). Alternatively use environment variables in the above task configuration.
+If successfully, the task will print the new domain id returned from the server.</p>
+</div>
+<div class="paragraph">
+<p>If any Axiomatics Decision Service (ADS) is configured to poll for changes of the namespace and domain, it will recieve the updated domain upon a successful push.</p>
+</div>
+<div class="paragraph">
+<p>For more information on how to setup client authentication see <a href="https://docs.axiomatics.com/axiomatics-services-manager/appendix/keycloak/appx-keycloak-client-for-ads/">https://docs.axiomatics.com/axiomatics-services-manager/appendix/keycloak/appx-keycloak-client-for-ads/</a></p>
 </div>
 </div>
 </div>
@@ -1906,7 +1986,7 @@ The image will be built use the Dockerfile in the project root. You can customiz
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 1.0.6<br>
+Version 1.0.8<br>
 </div>
 </div>
 <style>
