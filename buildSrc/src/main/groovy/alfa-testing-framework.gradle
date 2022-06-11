@@ -6,6 +6,7 @@ import com.axiomatics.domtool.cli.ConfigurableDomainCommand
 def prefix = "http://axiomatics.com/alfa/identifier/"
 
 def myErrOut = new ByteArrayOutputStream();
+def BUILD_ALFA_DEPENDENCIES = "build/alfa/dependencies"
 
 repositories {
     mavenCentral()
@@ -23,7 +24,7 @@ repositories {
             secretKey = System.env.AXIOMATICS_SECRET_ACCESS_KEY ?: project.findProperty('AXIOMATICS_SECRET_ACCESS_KEY')
         }
     }
-    //mavenLocal()
+    //mavenLocal() {metadataSources { artifact() } }
 }
 
 configurations {
@@ -31,17 +32,18 @@ configurations {
     alfac
     pip
     testImplementation.extendsFrom(pip)
+    policy
     ads.extendsFrom(pip)
 }
 
 dependencies {
     testImplementation group: 'junit', name: 'junit', version: '4.13+'
-    testImplementation "com.axiomatics.cr.alfa.test:alfa-test-framework:1.0.6"
+    testImplementation "com.axiomatics.cr.alfa.test:alfa-test-framework:1.0.8"
 
     domTool(group: 'com.axiomatics.domtool', name: 'domtool', version: '0.5')
     domTool(group: 'com.axiomatics.domtool', name: 'domtool-lib', version: '0.5')
 
-    ads "com.axiomatics.access-decision-service:access-decision-service:1.8.0"
+    ads "com.axiomatics.access-decision-service:access-decision-service:1.9.0"
 
     pip "com.axiomatics.cr.pip:constant-pip:2022.01.20"
     pip "com.axiomatics.cr.pip:http-pip:2022.01.21-SNAPSHOT"
@@ -77,6 +79,14 @@ task compileAlfaToPackage(type: JavaExec) {
     }
 }
 
+task stageAlfaDependencies(type: Sync) {
+    from configurations.policy
+    into "${BUILD_ALFA_DEPENDENCIES}"
+}
+project.tasks.withType(Test) {
+    it.dependsOn stageAlfaDependencies
+    it.environment.put("ALFA_RESOLVED_DIR", "${BUILD_ALFA_DEPENDENCIES}")
+}
 
 task prepareDirs {
     mkdir "${buildDir}/alfa/domain/package"
@@ -135,13 +145,14 @@ class AlfaExtension {
     String deploymentDescriptor = "deployment.yaml"
     String srcDir = "src/authorizationDomain"
     String licenseFile = null
+    String dockerName
 }
 
 class AlfaPlugin implements Plugin<Project> {
     void apply(Project project) {
         def accessKey = System.env.AXIOMATICS_ACCESS_KEY_ID ?: project.findProperty('AXIOMATICS_ACCESS_KEY_ID')
         def secretKey = System.env.AXIOMATICS_SECRET_ACCESS_KEY ?: project.findProperty('AXIOMATICS_SECRET_ACCESS_KEY')
-        if (
+        if (accessKey == null || secretKey == null ||
         accessKey.equals("Put the key id provided by Axiomatics here!") ||
                 secretKey.equals("Put the secret key provided by Axiomatics here!")
         ) {
@@ -158,7 +169,6 @@ class AlfaPlugin implements Plugin<Project> {
         project.tasks.register("compileAlfa", AlfaCompilationCommand.class) {
             group "axiomatics"
         }
-
         project.afterEvaluate {
             def alfa = project.extensions.alfa
             def srcFile = "${it.rootDir}/${project.extensions.alfa.deploymentDescriptor}"
@@ -169,6 +179,9 @@ class AlfaPlugin implements Plugin<Project> {
                 from srcFile
             }
             project.sourceSets.main.java.srcDirs += ['src/authorizationDomain']
+            project.tasks.withType(AdmPush) {
+                domainFile =  project.tasks.buildAuthzDomain.outputs.files
+            }
             project.tasks.withType(Test) {
                 outputs.upToDateWhen {false}
                 environment "ALFA_TEST_REMOTE_MAIN_POLICY" , "${project.extensions.alfa.mainpolicy}"
@@ -186,6 +199,7 @@ class AlfaPlugin implements Plugin<Project> {
                 }
             }
             project.tasks.compileAlfa {
+                inputs.files project.configurations.policy
                 inputs.files project.fileTree("src/authorizationDomain/alfaSpecifications")
                 outputs.dir project.file("build/alfa/domain/xacmlSpecifications")
             }
@@ -219,7 +233,7 @@ class AlfaPlugin implements Plugin<Project> {
             }
             def docker = project.extensions.docker
             docker.files project.installDist.outputs
-            docker.name  project.name
+            docker.name  project.extensions.alfa.dockerName == null ? project.name : project.extensions.alfa.dockerName
 
             project.tasks.stageAdsFiles.dependsOn project.tasks.buildAuthzDomain
             project.tasks.buildAuthzDomain.dependsOn project.tasks.compileAlfa

@@ -1,21 +1,32 @@
 plugins {
     id 'groovy-gradle-plugin'
 }
-apply from: 'loadProps.gradle'
+        apply from: 'loadProps.gradle'
+
+        def envAccessKey = System.env.AXIOMATICS_ACCESS_KEY_ID ?: project.findProperty('AXIOMATICS_ACCESS_KEY_ID')
+        def envSecretKey = System.env.AXIOMATICS_SECRET_ACCESS_KEY ?: project.findProperty('AXIOMATICS_SECRET_ACCESS_KEY')
+        if (envAccessKey == null || envSecretKey == null ||
+        envAccessKey.equals("Put the key id provided by Axiomatics here!") ||
+                envSecretKey.equals("Put the secret key provided by Axiomatics here!")
+        ) {
+            throw new GradleException("Credential to Axiomatics repository not set. Please set credentials provided by Axiomatics in file gradle.properties or as environment variables. " +
+                    "If you have not received the credentials, contact your Axiomatics support")
+        }
+
 repositories {
     gradlePluginPortal()
     maven {
         url "s3://axiomatics-cr-maven/release"
         credentials(AwsCredentials) {
-            accessKey = System.env.AXIOMATICS_ACCESS_KEY_ID ?: project.findProperty('AXIOMATICS_ACCESS_KEY_ID')
-            secretKey = System.env.AXIOMATICS_SECRET_ACCESS_KEY ?: project.findProperty('AXIOMATICS_SECRET_ACCESS_KEY')
+            accessKey =  envAccessKey
+            secretKey = envSecretKey
         }
     }
     maven {
         url "s3://axiomatics-customer-artifacts/releases"
         credentials(AwsCredentials) {
-            accessKey = System.env.AXIOMATICS_ACCESS_KEY_ID ?: project.findProperty('AXIOMATICS_ACCESS_KEY_ID')
-            secretKey = System.env.AXIOMATICS_SECRET_ACCESS_KEY ?: project.findProperty('AXIOMATICS_SECRET_ACCESS_KEY')
+            accessKey = envAccessKey
+            secretKey = envSecretKey
         }
     }
 }
@@ -25,4 +36,8 @@ dependencies {
     implementation(group: 'info.picocli', name: 'picocli', version: '4.5.2')
     implementation(group: 'com.axiomatics.domtool', name: 'domtool-lib', version: '0.5')
     implementation "com.palantir.gradle.docker:gradle-docker:0.33.0"
+    implementation group: 'org.yaml', name: 'snakeyaml', version: '1.30'
+    implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.2"
+    implementation 'org.apache.httpcomponents:httpclient:4.5.13'
+
 }
