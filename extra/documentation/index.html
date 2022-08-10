@@ -440,7 +440,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>ALFA Testing framework</h1>
 <div class="details">
-<span id="revnumber">version 1.0.8</span>
+<span id="revnumber">version 1.0.9-SNAPSHOT</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -512,12 +512,16 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel2">
 <li><a href="#_curl_with_json_body">Curl with JSON body</a></li>
 <li><a href="#_openapi">OpenAPI</a></li>
-<li><a href="#_sample_ava_pep_implementation">Sample ava PEP implementation</a></li>
+<li><a href="#_sample_java_pep_implementation">Sample java PEP implementation</a></li>
 <li><a href="#_reference_documentation">Reference documentation</a></li>
 </ul>
 </li>
 <li><a href="#_docker">Docker</a></li>
-<li><a href="#_axiomatics_service_manager_integration">Axiomatics Service Manager integration</a></li>
+<li><a href="#_axiomatics_service_manager_integration">Axiomatics Service Manager integration</a>
+<ul class="sectlevel2">
+<li><a href="#_custom_certificate">Custom certificate</a></li>
+</ul>
+</li>
 <li><a href="#_reference_and_further_documentation">Reference and further documentation</a></li>
 </ul>
 </div>
@@ -545,7 +549,7 @@ Please note that this project currently needs to be run with Java 11.
 </table>
 </div>
 <div class="paragraph">
-<p><a href="https://docs.gradle.org/current/userguide/what_is_gradle.html">Gradle</a> is a build automation tool that integrates well with build severs like Jenkins.</p>
+<p>This project is based on <a href="https://docs.gradle.org/current/userguide/what_is_gradle.html">Gradle</a>, a build automation tool that integrates well with build severs like Jenkins.</p>
 </div>
 <div class="paragraph">
 <p>This tool provides:</p>
@@ -624,7 +628,7 @@ Please note that this project currently needs to be run with Java 11.
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation last update: 2022-06-10</p>
+<p>Documentation last update: 2022-08-08</p>
 </div>
 </div>
 </div>
@@ -936,7 +940,7 @@ Note if you are asked to install a Java or JDK, please choose a version listed i
 <div class="sect2">
 <h3 id="_creating_attributes">Creating attributes</h3>
 <div class="paragraph">
-<p>Attributes need to be defined in dictionaries before they can be used in an ALFA policy or Attribute Connector. There are two dictionaries that needs to be populated. <em>src\authorizationDomain\alfaSpecifications\attributes.alfa</em> contains attributes used in ALFA policies and in tests. <em>src\authorizationDomain\attributes.yaml</em> contains attributes that are used as output from Attribute Connectors.</p>
+<p>Attributes need to be defined in dictionaries before they can be used in an ALFA policy or Attribute Connector. There are two dictionaries that needs to be populated. <em>src/authorizationDomain/alfaSpecifications/attributes.alfa</em> contains attributes used in ALFA policies and in tests. <em>src/authorizationDomain/attributes.yaml</em> contains attributes that are used as output from Attribute Connectors.</p>
 </div>
 <div class="sect3">
 <h4 id="_policy_attributes">Policy attributes</h4>
@@ -987,7 +991,7 @@ Note if you are asked to install a Java or JDK, please choose a version listed i
 <div class="sect3">
 <h4 id="_attributes_yaml">attributes.yaml</h4>
 <div class="paragraph">
-<p>Attributes that are resolved by an Attribute Finder (and thus can is cachable) needs to be defined in the attribute.yaml file. This file is YAML format. More information <a href="https://docs.axiomatics.com/access-decision-service/authorization-domains/using-a-yaml-domain/#the-attributes-section">here</a>.</p>
+<p>Attributes that are resolved by an Attribute Connector (and thus can be cachable) needs to be defined in the attribute.yaml file. This file is YAML format. More information <a href="https://docs.axiomatics.com/access-decision-service/authorization-domains/using-a-yaml-domain/#the-attributes-section">here</a>.</p>
 </div>
 <div class="paragraph">
 <p>Category is any of: <em>AccessSubject, Resource, Action or Environment</em> and defines if the attribute is a property of a subject (such as role) or  resource (such as owner) etc.</p>
@@ -1850,7 +1854,7 @@ In order to run ADS you need a valid software license specified, see <a href="#G
 </div>
 </div>
 <div class="sect2">
-<h3 id="_sample_ava_pep_implementation">Sample ava PEP implementation</h3>
+<h3 id="_sample_java_pep_implementation">Sample java PEP implementation</h3>
 <div class="paragraph">
 <p>An example Java PEP implementation can be found in
 <a href="https://github.com/axiomatics/java-json-pep-sdk" class="bare">https://github.com/axiomatics/java-json-pep-sdk</a>.</p>
@@ -1859,7 +1863,7 @@ In order to run ADS you need a valid software license specified, see <a href="#G
 <div class="sect2">
 <h3 id="_reference_documentation">Reference documentation</h3>
 <div class="paragraph">
-<p>THe XACML JSON reference documentation from OASIS is avaialble here
+<p>The XACML JSON reference documentation from OASIS is available here
 <a href="http://docs.oasis-open.org/xacml/xacml-json-http/v1.0/xacml-json-http-v1.0.html" class="bare">http://docs.oasis-open.org/xacml/xacml-json-http/v1.0/xacml-json-http-v1.0.html</a></p>
 </div>
 </div>
@@ -1917,7 +1921,7 @@ The image will be built use the Dockerfile in the project root. You can customiz
 <h2 id="_axiomatics_service_manager_integration">Axiomatics Service Manager integration</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The authorization domain can be pushed to Axiomatics Service Manager (ASM) 7 via the Axiomatics Domain Manager API (ADM)</p>
+<p>The authorization domain can be pushed to Axiomatics Service Manager (ASM) 7 via the Axiomatics Domain Manager API (ADM).</p>
 </div>
 <div class="paragraph">
 <p>To push the domain to ASM add a new task in the build.gradle file:</p>
@@ -1926,32 +1930,32 @@ The image will be built use the Dockerfile in the project root. You can customiz
 <div class="title">build.gradle</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="groovy">task pushToAdm(<span class="key">type</span>: AdmPush) {
-    group <span class="string"><span class="delimiter">'</span><span class="content">axiomatics</span><span class="delimiter">'</span></span> <b class="conum">(1)</b>
-    client_id <span class="string"><span class="delimiter">'</span><span class="content">ads1</span><span class="delimiter">'</span></span> <b class="conum">(2)</b>
-    client_secret <span class="string"><span class="delimiter">'</span><span class="content">wBGbr79PXG3cyjgmFpJWMqnK842k3ene</span><span class="delimiter">'</span></span> <b class="conum">(3)</b>
-    tokenUri <span class="string"><span class="delimiter">&quot;</span><span class="content">https://asm.acme.com/auth/realms/asm/protocol/openid-connect/token</span><span class="delimiter">&quot;</span></span><b class="conum">(4)</b>
-    url <span class="string"><span class="delimiter">&quot;</span><span class="content">https://asm.acme.com/adm/api</span><span class="delimiter">&quot;</span></span><b class="conum">(5)</b>
-    namespace <span class="string"><span class="delimiter">'</span><span class="content">MyProject</span><span class="delimiter">'</span></span> <b class="conum">(6)</b>
-    domain <span class="string"><span class="delimiter">'</span><span class="content">MyDomain</span><span class="delimiter">'</span></span><b class="conum">(7)</b>
+    group <span class="string"><span class="delimiter">'</span><span class="content">axiomatics</span><span class="delimiter">'</span></span> //<b class="conum">(1)</b>
+    client_id <span class="string"><span class="delimiter">'</span><span class="content">ads1</span><span class="delimiter">'</span></span> //<b class="conum">(2)</b>
+    client_secret <span class="string"><span class="delimiter">'</span><span class="content">wBGbr79PXG3cyjgmFpJWMqnK842k3ene</span><span class="delimiter">'</span></span> //<b class="conum">(3)</b>
+    tokenUri <span class="string"><span class="delimiter">&quot;</span><span class="content">https://asm.acme.com/auth/realms/asm/protocol/openid-connect/token</span><span class="delimiter">&quot;</span></span> //<b class="conum">(4)</b>
+    url <span class="string"><span class="delimiter">&quot;</span><span class="content">https://asm.acme.com/adm/api</span><span class="delimiter">&quot;</span></span> //<b class="conum">(5)</b>
+    namespace <span class="string"><span class="delimiter">'</span><span class="content">MyProject</span><span class="delimiter">'</span></span> //<b class="conum">(6)</b>
+    domain <span class="string"><span class="delimiter">'</span><span class="content">MyDomain</span><span class="delimiter">'</span></span> //<b class="conum">(7)</b>
 }</code></pre>
 </div>
 </div>
 <div class="colist arabic">
 <ol>
 <li>
-<p>Place this new task under in the Axiomatics group</p>
+<p>Place this new Gradle task under the Axiomatics group</p>
 </li>
 <li>
-<p>client id to use for Keycloak authentication</p>
+<p>client id to use for Keycloak (OIDC) authentication</p>
 </li>
 <li>
-<p>client secret to use for Keycloak authentication</p>
+<p>client secret to use for Keycloak (OIDC) authentication</p>
 </li>
 <li>
-<p>Keycloak authorization endpoint</p>
+<p>Keycloak (OIDC) authorization endpoint</p>
 </li>
 <li>
-<p>ADM API endpoint</p>
+<p>ADM API endpoint. Should end with 'adm/api'</p>
 </li>
 <li>
 <p>Namespace to push to</p>
@@ -1962,14 +1966,25 @@ The image will be built use the Dockerfile in the project root. You can customiz
 </ol>
 </div>
 <div class="paragraph">
-<p>It is possible to create multiple tasks that pushes to different namespaces or domains if you want to upload the domain to different target environments (such as test or prod). Alternatively use environment variables in the above task configuration.
+<p>It is possible to create multiple tasks that push to different namespaces or domains if you want to upload the domain to different target environments (such as test or prod). Alternatively use environment variables in the above task configuration.
 If successfully, the task will print the new domain id returned from the server.</p>
 </div>
 <div class="paragraph">
-<p>If any Axiomatics Decision Service (ADS) is configured to poll for changes of the namespace and domain, it will recieve the updated domain upon a successful push.</p>
+<p>If any Axiomatics Decision Service (ADS) is configured to poll for changes of the namespace and domain, it will receive the updated domain upon a successful push.</p>
 </div>
 <div class="paragraph">
 <p>For more information on how to setup client authentication see <a href="https://docs.axiomatics.com/axiomatics-services-manager/appendix/keycloak/appx-keycloak-client-for-ads/">https://docs.axiomatics.com/axiomatics-services-manager/appendix/keycloak/appx-keycloak-client-for-ads/</a></p>
+</div>
+<div class="sect2">
+<h3 id="_custom_certificate">Custom certificate</h3>
+<div class="paragraph">
+<p>If your ASM is running with custom certificate that is not in the truststore, you either need to add it or run with a custom truststore:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>./gradlew pushToAdm -Djavax.net.ssl.trustStore=truststore.jks -Djavax.net.ssl.trustStorePassword=changeit</code></pre>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -1990,7 +2005,7 @@ If successfully, the task will print the new domain id returned from the server.
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 1.0.8<br>
+Version 1.0.9-SNAPSHOT<br>
 </div>
 </div>
 <style>
