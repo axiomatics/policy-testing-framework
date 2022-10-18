@@ -36,6 +36,12 @@ configurations {
     ads.extendsFrom(pip)
 }
 
+
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 4, 'hours'
+}
+
+
 dependencies {
     testImplementation group: 'junit', name: 'junit', version: '4.13+'
     testImplementation "com.axiomatics.cr.alfa.test:alfa-test-framework:1.0.9-SNAPSHOT"
