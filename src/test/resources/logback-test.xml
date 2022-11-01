@@ -8,7 +8,7 @@
         </layout>
     </appender>
 
-    <logger name="com.axiomatics" level="INFO" additivity="false">
+    <logger name="com.axiomatics" level="WARN" additivity="false">
         <appender-ref ref="CONSOLE"/>
     </logger>
 
