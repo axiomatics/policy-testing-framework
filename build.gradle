@@ -6,7 +6,9 @@ version = '1.0'
 group = 'com.myorg.alfa'
 
 alfa {
+    namespace project.name
     mainpolicy = "acme.Main"
+
     licenseFile = "license/axiomatics_PDP.license"
 }
 dependencies {
