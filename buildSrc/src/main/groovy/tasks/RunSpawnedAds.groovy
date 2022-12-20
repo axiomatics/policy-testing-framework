@@ -82,7 +82,7 @@ class RunSpawnedAds extends DefaultTask {
 
         }
         def result = adm.host + String.format(template,adm.alfa.namespace,adm.domainName)
-        logger.info("Location of domain.yaml is ${result}" )
+        logger.lifecycle("Location of domain.yaml is ${result}" )
         return result
     }
 
@@ -122,9 +122,10 @@ server:
     appenders:
       - type: console
 logging:
-  level: WARN
+  level:  \${LOGLEVEL:-${logger.isInfoEnabled()?"DEBUG":"WARN"}}
   loggers:
-    "com.axiomatics": \${LOGLEVEL:-INFO}
+    "org.apache.jcs": \${LOGLEVEL:-${logger.isInfoEnabled()?"WARN":"INFO"}}
+    "com.axiomatics": \${LOGLEVEL:-${logger.isInfoEnabled()?"DEBUG":"INFO"}}
   appenders:
     - type: console
       target: stdout

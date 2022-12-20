@@ -71,7 +71,6 @@ public class AdmExtension {
     }
 
     void domainName(String spec) {
-        println "Setting domain to " + spec
         domainName = spec
     }
 
@@ -83,7 +82,6 @@ public class AdmExtension {
                 ", domainName='" + domainName + '\'' +
                 ", basicCredentials=" + basicCredentials +
                 ", oidcCredentials=" + oidcCredentials +
-                ", alfa=" + alfa +
                 ", envVariable=" + envVariable +
                 '}';
     }

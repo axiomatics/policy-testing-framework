@@ -94,12 +94,23 @@ class AlfaExtension {
             group specificGroup
             dependsOn waitToStartAdsForAdm
             doFirst {
-                logger.lifecycle("ADS is running on port ${lAdm.adsHttpPort}. Stop it with Ctrl-C!")
+                logger.lifecycle("ADS is running on port ${lAdm.adsHttpPort}. ${logger.isInfoEnabled()?"": "To see ADS output run gradle with --info. "}Stop it with Ctrl-C!")
             }
             doLast {
+                def process = lAdm.process
                 try {
-                    Thread.currentThread().sleep(72000000)
+                    if (process == null || false == logger.isInfoEnabled()) {
+                        Thread.currentThread().sleep(72000000)
+                    } else {
+                        def line;
+                        BufferedReader reader =
+                                new BufferedReader(new InputStreamReader(process.getInputStream()));
+                        while (process.isAlive() && (line = reader.readLine()) != null) {
+                            logger.info(line)
+                        }
+                    }
                 } catch (Exception e) {
+                    logger.info("Out of ADS with exception",e)
                     if (lAdm.process != null) {
                         logger.info("Stopping ADS process")
                         lAdm.process.destroyForcibly()
