@@ -50,9 +50,10 @@ class AlfaExtension {
         {
         }
         project.logger.info("Registring tasks for adm with environment ${lAdm.environment}")
-        String admId = "-" + lAdm.environment.toLowerCase()
+        String admId = lAdm.environment
         String specificGroup = "axiomatics-adm-${lAdm.environment.toLowerCase()}"
         String pullFrom ="pullFrom"
+        String promoteFrom = "promoteFrom"
         String pullFromAdm = pullFrom + admId
         String pushToAdm = "pushTo" + admId
         String spawnAdsWithAdm = "spawnAdsWith" + admId
@@ -136,8 +137,8 @@ class AlfaExtension {
         project.logger.info("Index of ${lAdm.environment} is ${admIndex}")
         if (admIndex > 0) {
             lAlfa.repositories.adms.subList(0, admIndex).forEach(source -> {
-                String taskName = "copyFrom${source.environment}To${lAdm.environment}"
-                String sourceTask = "${pullFrom}-${source.environment}"
+                String taskName = "${promoteFrom}${source.environment}To${lAdm.environment}"
+                String sourceTask = "${pullFrom}${source.environment}"
                 project.logger.info("  adding task ${taskName}. With source task ${sourceTask}")
                 project.tasks.register(taskName, AdmPushTask.class) {
                     group specificGroup
