@@ -1,40 +1,35 @@
-import com.axiomatics.alfa.XacmlDslStandaloneSetupGenerated
-import com.axiomatics.alfa.xacmlDsl.XacmlDslPackage
-import com.axiomatics.alfa.xacmlDsl.impl.XacmlDslFactoryImpl;
-import com.google.inject.Inject;
-import com.google.inject.Injector;
-import com.google.inject.Provider
-import org.eclipse.emf.ecore.EPackage
-import org.eclipse.xtext.resource.IResourceFactory
-import org.eclipse.xtext.resource.IResourceServiceProvider;
+package extra
 
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.xtext.generator.IGenerator2;
-import org.eclipse.xtext.generator.IGeneratorContext;
-import org.eclipse.xtext.generator.JavaIoFileSystemAccess;
-import org.eclipse.xtext.util.CancelIndicator;
-import org.eclipse.xtext.validation.CheckMode;
-import org.eclipse.xtext.validation.IResourceValidator;
-import org.eclipse.xtext.validation.Issue;
 
-public class AlfaStandaloneJavaGenerator {
+import org.eclipse.emf.common.util.URI
+import org.eclipse.emf.ecore.resource.Resource
+import org.eclipse.emf.ecore.resource.ResourceSet
+import org.eclipse.xtext.generator.IGenerator2
+import org.eclipse.xtext.generator.IGeneratorContext
+import org.eclipse.xtext.generator.JavaIoFileSystemAccess
+import org.eclipse.xtext.util.CancelIndicator
+import org.eclipse.xtext.validation.CheckMode
+import org.eclipse.xtext.validation.IResourceValidator
+import org.eclipse.xtext.validation.Issue
+import org.gradle.api.logging.Logger
+
+
+class AlfaStandaloneJavaGenerator {
 
     private ResourceSet resourceSet
     private IResourceValidator validator;
     private IGenerator2 generator;
     private JavaIoFileSystemAccess fileAccess;
+    private boolean extraAttributeIdCheck;
+    private Logger logger
 
-    public AlfaStandaloneJavaGenerator(ResourceSet resourceSet, JavaIoFileSystemAccess fileAccess, IResourceValidator validator, IGenerator2 generator) {
+    public AlfaStandaloneJavaGenerator(ResourceSet resourceSet, JavaIoFileSystemAccess fileAccess, IResourceValidator validator, IGenerator2 generator, boolean extraAttributeIdCheck, Logger logger) {
         this.resourceSet = resourceSet;
         this.fileAccess = fileAccess;
         this.validator = validator
         this.generator = generator;
+        this.extraAttributeIdCheck = extraAttributeIdCheck
+        this.logger = logger;
     }
 
      public List<Issue>  run(Set<String> sources, String outputFolderName) {
@@ -54,6 +49,10 @@ public class AlfaStandaloneJavaGenerator {
         Resource resource;
         while(var5.hasNext()) {
             resource = (Resource)var5.next();
+            if (extraAttributeIdCheck) {
+                logger.info("Calling extra attribute validation before compilation")
+                ExtraAlfaValidator.validate(resource);
+            }
             List<Issue> list = validator.validate(resource, CheckMode.ALL, CancelIndicator.NullImpl);
             if (!list.isEmpty()) {
               return list

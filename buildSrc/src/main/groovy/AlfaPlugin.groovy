@@ -1,0 +1,124 @@
+import extensions.AlfaExtension
+import org.gradle.api.GradleException
+import org.gradle.api.Plugin
+import org.gradle.api.Project
+import org.gradle.api.tasks.testing.Test
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
+import tasks.AdmPushTask
+import tasks.AlfaCompilationTask
+
+class AlfaPlugin implements Plugin<Project> {
+
+    void apply(Project project) {
+        project.logger.info("Apply alfa plugin")
+        def accessKey = System.env.AXIOMATICS_ACCESS_KEY_ID ?: project.findProperty('AXIOMATICS_ACCESS_KEY_ID')
+        def secretKey = System.env.AXIOMATICS_SECRET_ACCESS_KEY ?: project.findProperty('AXIOMATICS_SECRET_ACCESS_KEY')
+        if (accessKey == null || secretKey == null ||
+                accessKey.equals("Put the key id provided by Axiomatics here!") ||
+                secretKey.equals("Put the secret key provided by Axiomatics here!")
+        ) {
+            throw new GradleException("Credential to Axiomatics repository not set. Please set credentials provided by Axiomatics in file gradle.properties or as environment variables. " +
+                    "If you have not received the credentials, contact your Axiomatics support")
+        }
+        project.logger.info("Access key id found ${accessKey}")
+        project.extensions.create('alfa', AlfaExtension, project)
+        project.plugins.apply('java')
+        project.plugins.apply('distribution')
+        project.getPluginManager().apply("com.palantir.docker")
+        project.tasks.register("buildAuthzDomain", BuildAuthZDomainTask.class) {
+            group "axiomatics"
+        }
+        project.tasks.register("compileAlfa", AlfaCompilationTask.class) {
+            group "axiomatics"
+        }
+        project.afterEvaluate {
+            project.logger.info("Project after evaluate begins")
+            AlfaExtension alfa = project.extensions.alfa
+            def srcFile = "${it.rootDir}/${project.extensions.alfa.deploymentDescriptor}"
+            if (! new File(srcFile).exists()) {
+                throw new GradleException("alfa.deploymentdescriptor does not exist: ${srcFile}")
+            }
+            project.tasks.stageDeploymentDescriptor {
+                from srcFile
+            }
+            project.tasks.withType(AlfaCompilationTask.class) {
+                extraAttributeIdCheck = alfa.extraAttributeIdCheck
+            }
+            project.tasks.withType(Test.class) {
+                doFirst {
+                    logger.info("Environment is ${environment}")
+                }
+                outputs.upToDateWhen {false}
+                environment "ALFA_TEST_REMOTE_MAIN_POLICY" , "${project.extensions.alfa.mainpolicy}"
+                testLogging {
+                    events TestLogEvent.FAILED,
+                            TestLogEvent.SKIPPED,
+                            TestLogEvent.PASSED,
+                            TestLogEvent.STANDARD_ERROR,
+                            TestLogEvent.STANDARD_OUT
+                    exceptionFormat TestExceptionFormat.FULL
+                    showCauses true
+                    showExceptions true
+                    showStackTraces true
+                    showStandardStreams false
+                }
+            }
+            project.tasks.compileAlfa {
+                doFirst {
+                    logger.info("Policy dependnecies on configuration 'policy' is ${project.configurations.policy}")
+                }
+                inputs.files project.configurations.policy
+                inputs.files project.fileTree("src/authorizationDomain/alfaSpecifications")
+                outputs.dir project.file("build/alfa/domain/xacmlSpecifications")
+            }
+            project.tasks.buildAuthzDomain {
+                xmlPolicies = project.fileTree("${project.buildDir}/alfa/domain/xacmlSpecifications")
+                srcDir = project.fileTree(project.extensions.alfa.srcDir)
+                mainPolicy  project.extensions.alfa.mainpolicy
+                domainFile = project.file("${project.buildDir}/alfa/domain/ads/domain.yaml")
+
+            }
+
+            project.tasks.stageLicenseFile {
+                def ilicenseFile = project.extensions.alfa.licenseFile
+                def filename = new File(ilicenseFile).getName()
+                logger.info("License file at ${filename}")
+                def idstDir = "${project.buildDir}/alfa/domain/ads/"
+                inputs.property("srcFile", ilicenseFile)
+                inputs.property("filename", filename)
+                inputs.property("dstDir", idstDir)
+                inputs.files project.file(ilicenseFile)
+                outputs.files project.file("${idstDir}/${filename}")
+
+            }
+            project.extensions.distributions.main {
+                contents {
+                    into ('lib')    { from  project.configurations.ads }
+                    into ('domain') { from  project.buildAuthzDomain,
+                            alfa.licenseFile,
+                            alfa.deploymentDescriptor
+                    }
+
+                }
+            }
+            def docker = project.extensions.docker
+            docker.files project.installDist.outputs
+            docker.name  project.extensions.alfa.dockerName == null ? project.name.toLowerCase() : project.extensions.alfa.dockerName.toLowerCase()
+
+            project.tasks.stageAdsFiles.dependsOn project.tasks.buildAuthzDomain
+            project.tasks.buildAuthzDomain.dependsOn project.tasks.compileAlfa
+            project.tasks.dockerPrepare.dependsOn project.tasks.installDist
+            project.tasks.buildAdsDockerImage.dependsOn project.tasks.docker
+
+            project.tasks.withType(AdmPushTask.class) {
+              if (domainFile == null) {
+                  domainFile project.tasks.buildAuthzDomain.domainFile
+              }
+            }
+
+            project.logger.info("Project after evaluate ends")
+        } //after evaluate
+        project.logger.info("Apply alfa plugin ends")
+    }
+}

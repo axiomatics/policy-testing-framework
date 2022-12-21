@@ -4,6 +4,8 @@ import org.gradle.api.file.FileTree
 
 public class ConfigurableDomainCommand extends com.axiomatics.domtool.cli.DomainCommand {
 
+    // NOTE! Do not move this class to another pacakge, it needs to access package private methods
+
     private static final String MAIN_POLICY_PREFIX = "http://axiomatics.com/alfa/identifier/"
     public FileTree srcDir;
     public FileTree xmlPolicies;

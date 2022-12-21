@@ -6,36 +6,45 @@ version = '1.0'
 group = 'com.myorg.alfa'
 
 alfa {
-    mainpolicy = "acme.Main"
-    licenseFile = "license/axiomatics_PDP.license"
+    namespace "MyProject"
+    mainpolicy "acme.Main"
+
+    licenseFile "license/axiomatics_PDP.license"
+
+    repositories {
+        //Add one or more ADM repositories to get push, pull, run, test and promote tasks
+        /**
+         adm {
+         environment 'Dev'
+         envVariable 'LDAP_PIP_URL', 'http://ldap-dev.myorg.com'
+         host 'https://myaps.acme.com'
+         domainName 'DevStaging'
+         oidcCredentials {
+         client_id 'ads'
+         client_secret ''
+           }
+         }
+         **/
+
+    }
 }
 dependencies {
-        // ads files('truststore.jks') //Add extra files for Ads and Docker image
+    //Add extra files for Ads and Docker image runtime
+    // ads files('truststore.jks')
 }
 
 test {
-    environment "LDAP_PIP_URL", "http://ldap-dev.myorg.com"
+    //Add environment variables needed for tests
+    //environment "LDAP_PIP_URL", 'http://ldap-dev.myorg.com'
 }
 
-task test_LocalEnv(type: Test) {
-    group "verification"
-    environment "ALFA_TEST_REMOTE_URL", "http://127.0.0.1:8081/authorize"
-    environment "ALFA_TEST_REMOTE_USER", "pdp-user"
-    environment "ALFA_TEST_REMOTE_PASSWORD", "secret"
-}
+//Add testing task of external ADS
+/**
+ task test_LocalEnv(type: Test) {
+ group "verification"
+ environment "ALFA_TEST_REMOTE_URL", "http://127.0.0.1:8081/authorize"
+ environment "ALFA_TEST_REMOTE_USER", "pdp-user"
+ environment "ALFA_TEST_REMOTE_PASSWORD", "secret"
+ }
+ **/
 
-task test_DevEnv(type: Test) {
-    group "verification"
-    environment "ALFA_TEST_REMOTE_URL", "http://ads-dev.myorg.com/authorize"
-    environment "ALFA_TEST_REMOTE_USER", "pdp-user"
-    environment "ALFA_TEST_REMOTE_PASSWORD", "secret"
-}
-
-task test_ProductionEnv(type: Test) {
-    group "verification"
-    environment "ALFA_TEST_REMOTE_URL", "http://ads.myorg.com/authorize"
-    environment "ALFA_TEST_REMOTE_USER", "pdp-user"
-    environment "ALFA_TEST_REMOTE_PASSWORD", "secret"
-    environment "ALFA_TEST_REMOTE_HEADER", "headers.json"
-    environment "LDAP_PIP_URL", "http://ldap-dev.myorg.com"
-}
