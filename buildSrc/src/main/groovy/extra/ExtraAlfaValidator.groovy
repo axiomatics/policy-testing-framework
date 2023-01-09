@@ -24,11 +24,15 @@ class ExtraAlfaValidator {
     }
 
     static void visit(List<NamespaceDeclaration> namespaces, String file, NamespaceDeclarationImpl ns) {
-        if (namespaces == null) {
-            namespaces = new ArrayList<>()
-        }
-        namespaces.add(ns);
-        ns.eContents().forEach(it -> visit(namespaces, file, it))
+
+        ns.eContents().forEach(it -> {
+            List<NamespaceDeclaration> localNamespaces = new ArrayList<>();
+            if (namespaces != null) {
+                localNamespaces.addAll(namespaces);
+            }
+            localNamespaces.add(ns);
+            visit(localNamespaces, file, it)
+        })
     }
 
 
@@ -39,13 +43,11 @@ class ExtraAlfaValidator {
         String fqn = namespaceString + attribute.name
 
         ICompositeNode node = NodeModelUtils.getNode(attribute);
-        String lines = node.getTextRegionWithLineInformation().toString()
-
 
         if (false == attribute.getUri().equals(fqn)) {
             throw new RuntimeException("Attribute id and name mismatches for some attributes in your alfa. " +
                     "You are strongly recommended to have id and name equal for attributes in file attributes.yaml. Violating attribute is '" +
-                    fqn + "' != ' " + attribute.getUri() + "' in " +file+ ":"+node.startLine + ". Suggestion: Make id and name equal, remove 'standard-attributes.alfa' file if it exists in your src directory or you can also turn off this extra check by setting adding 'extraAttributeIdCheck' false in alfa section of build.gradle.")
+                    fqn + "' != '" + attribute.getUri() + "' in " +file+ ":"+node.startLine + ". Suggestion: Make id and name equal, remove 'standard-attributes.alfa' file if it exists in your src directory or you can also turn off this extra check by setting adding 'extraAttributeIdCheck' false in alfa section of build.gradle.")
 
         }
     }
