@@ -14,7 +14,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class MyAttributeconnectorTest {
 
     @Rule
-    public AlfaTestRule rule = new AlfaTestRule().withMainPolicy("acme.Main");
+    public AlfaTestRule rule = new AlfaTestRule();
 
     @Test
     public void shouldGetRoleConsultantForCecilia() {

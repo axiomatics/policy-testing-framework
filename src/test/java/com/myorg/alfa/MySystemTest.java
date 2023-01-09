@@ -14,7 +14,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class MySystemTest {
 
     @Rule
-    public AlfaTestRule rule = new AlfaTestRule().withMainPolicy("acme.Main").withAttributeConnectors();
+    public AlfaTestRule rule = new AlfaTestRule().withAttributeConnectors();
 
     @Test
     public void shouldGiveMartinAccessToResource1() {
