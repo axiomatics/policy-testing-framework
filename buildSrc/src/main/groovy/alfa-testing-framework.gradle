@@ -50,7 +50,7 @@ dependencies {
     ads "com.axiomatics.access-decision-service:access-decision-service:1.10.0"
 
     pip "com.axiomatics.cr.pip:constant-pip:2022.01.20"
-    pip "com.axiomatics.cr.pip:http-pip:2022.04.01"
+    pip "com.axiomatics.cr.pip:http-pip:2022.06.17"
     pip "com.axiomatics.cr.pip:parser-pip:2022.01.21-SNAPSHOT"
     pip "com.axiomatics.attribute-connectors.sql:sql-attribute-connector:6.2.2@jar"
     pip "com.axiomatics.attribute-connectors.ldap:ldap-attribute-connector:6.3.0@jar"
@@ -67,6 +67,7 @@ configurations.pip {
     exclude group: 'commons-logging', module: 'commons-logging' //included in ADS 1.10.0
     exclude group: 'org.apache.commons', module: 'commons-lang3' //included in ADS 1.10.0
     exclude group: 'org.ow2.asm', module: 'asm' //included in ADS 1.10.0
+    exclude group: 'log4j', module: 'log4j' //included in ADS 1.10.0
 
 }
 
