@@ -1,2 +1,7 @@
-﻿.gradle
+.gradle
+bin/**/*
+build/**/*
+out/**/*
+.vscode/**/*
+**/src-gen
 buildSrc/build
