@@ -29,6 +29,9 @@ jobs:
         java-version: '11'
         distribution: 'temurin'
     - name: Build with Gradle
+      env:
+        AXIOMATICS_ACCESS_KEY_ID: ${{ secrets.AXIOMATICS_ACCESS_KEY_ID}}
+        AXIOMATICS_SECRET_ACCESS_KEY: ${{ secrets.AXIOMATICS_SECRET_ACCESS_KEY }}
       uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
       with:
         arguments: build test
