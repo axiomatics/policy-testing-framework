@@ -1,10 +1,12 @@
 ## Axiomatics Policy Testing Framework
 
-A project that will _[add your own description of your project]._
+This repository is the entry point to start with Attribute Base Access Control (ABAC) and Policy-as-code from Axiomatics.
 
 ## Documentation
 
 Online documentation from Axiomatics is available at https://docs.axiomatics.com/policy-testing-framework/
+
+ALFA introduction available at https://axiomatics.github.io/alfa-vscode-doc/docs/alfa-introduction/introduction/
 
 ### Quick start
 
@@ -16,3 +18,38 @@ Online documentation from Axiomatics is available at https://docs.axiomatics.com
 6. Copy Axiomatics ADS license, that you received from Axiomatics, to `license/` directory
 7. Execute target `runAds` to start the Access Decision Service locally
 8. Execute `buildAdsDockerImage` to build a docker image to the local docker registry
+
+
+### ALFA
+A simple example allowing all consultants to access resources in their own location.
+
+#### main.alfa
+```groovy 
+
+namespace acme {
+
+    policyset Main {
+        apply firstApplicable
+        consultants.Main
+    }
+}
+
+```
+
+#### consultants.alfa
+```groovy
+namespace consultants {
+    policy Main {
+        target
+            clause user.role == "consultant"
+        
+        apply firstApplicable
+        rule permitIfLocationsMatch {
+            permit
+            condition user.location == resource.location
+        }
+    }
+}
+```
+## Contact
+Feel free to contact us at https://www.axiomatics.com if you have any questions
