@@ -32,6 +32,17 @@ class AlfaPlugin implements Plugin<Project> {
         project.tasks.register("compileAlfa", AlfaCompilationTask.class) {
             group "axiomatics"
         }
+        project.distributions {
+            main {
+                contents {
+
+                    into('domain') {
+                        exclude("README.md")
+                        from 'src/extra'
+                    }
+                }
+            }
+        }
         project.afterEvaluate {
             project.logger.info("Project after evaluate begins")
             AlfaExtension alfa = project.extensions.alfa
