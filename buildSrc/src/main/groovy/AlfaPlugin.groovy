@@ -59,6 +59,7 @@ class AlfaPlugin implements Plugin<Project> {
             project.tasks.withType(Test.class) {
                 doFirst {
                     logger.info("Environment is ${environment}")
+                    workingDir "src/extra"
                 }
                 outputs.upToDateWhen {false}
                 environment "ALFA_TEST_REMOTE_MAIN_POLICY" , "${project.extensions.alfa.mainpolicy}"
