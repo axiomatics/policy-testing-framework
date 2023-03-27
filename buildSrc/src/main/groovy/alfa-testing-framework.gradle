@@ -4,7 +4,7 @@ import org.gradle.api.GradleException
 def prefix = "http://axiomatics.com/alfa/identifier/"
 
 def myErrOut = new ByteArrayOutputStream();
-def BUILD_ALFA_DEPENDENCIES = "build/alfa/dependencies"
+def BUILD_ALFA_DEPENDENCIES = project.rootProject.file("build/alfa/dependencies")
 
 repositories {
     mavenCentral()
