@@ -32,6 +32,7 @@ configurations {
     testImplementation.extendsFrom(pip)
     policy
     ads.extendsFrom(pip)
+    adsCompile
 }
 
 
@@ -47,10 +48,10 @@ dependencies {
     domTool(group: 'com.axiomatics.domtool', name: 'domtool', version: '0.9.0')
     domTool(group: 'com.axiomatics.domtool', name: 'domtool-lib', version: '0.9.0')
 
-    ads "com.axiomatics.access-decision-service:access-decision-service:1.10.2"
+    adsCompile "com.axiomatics.access-decision-service:access-decision-service:1.10.2"
 
     pip "com.axiomatics.cr.pip:constant-pip:2022.01.20"
-    pip "com.axiomatics.cr.pip:http-pip:2022.06.17"
+    pip "com.axiomatics.cr.pip:http-pip:2023.03.10"
     pip "com.axiomatics.cr.pip:parser-pip:2022.01.21-SNAPSHOT"
     pip "com.axiomatics.attribute-connectors.sql:sql-attribute-connector:6.2.2@jar"
     pip "com.axiomatics.attribute-connectors.ldap:ldap-attribute-connector:6.3.0@jar"

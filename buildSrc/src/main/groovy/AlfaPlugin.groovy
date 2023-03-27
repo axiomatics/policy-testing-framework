@@ -43,6 +43,21 @@ class AlfaPlugin implements Plugin<Project> {
                 }
             }
         }
+        project.configurations {
+            implementation.extendsFrom adsCompile
+            implementation.extendsFrom pip
+            ads.extendsFrom adsCompile
+        }
+        project.dependencies {
+            ads project.tasks.jar.outputs.files
+        }
+        project.sourceSets {
+            main {
+                resources {
+                    srcDir 'extra'
+                }
+            }
+        }
         project.afterEvaluate {
             project.logger.info("Project after evaluate begins")
             AlfaExtension alfa = project.extensions.alfa
