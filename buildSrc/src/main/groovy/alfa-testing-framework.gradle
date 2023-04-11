@@ -48,7 +48,7 @@ dependencies {
     domTool(group: 'com.axiomatics.domtool', name: 'domtool', version: '0.9.0')
     domTool(group: 'com.axiomatics.domtool', name: 'domtool-lib', version: '0.9.0')
 
-    adsCompile "com.axiomatics.access-decision-service:access-decision-service:1.10.2"
+    adsCompile "com.axiomatics.access-decision-service:access-decision-service:1.11.0"
 
     pip "com.axiomatics.cr.pip:constant-pip:2022.01.20"
     pip "com.axiomatics.cr.pip:http-pip:2023.03.10"
