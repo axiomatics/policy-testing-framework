@@ -101,11 +101,13 @@ class AlfaPlugin implements Plugin<Project> {
             }
             project.tasks.buildAuthzDomain {
                 xmlPolicies = project.fileTree("${project.buildDir}/alfa/domain/xacmlSpecifications")
-                srcDir = project.fileTree(project.extensions.alfa.srcDir)
+                srcDir = project.file(project.extensions.alfa.srcDir)
                 mainPolicy  project.extensions.alfa.mainpolicy
                 domainFile = project.file("${project.buildDir}/alfa/domain/ads/domain.yaml")
+                versionFile = project.buildDir.toPath().resolve("repositoryAndVersion").toFile()
 
             }
+
 
             project.tasks.stageLicenseFile {
                 def ilicenseFile = project.extensions.alfa.licenseFile
@@ -137,6 +139,7 @@ class AlfaPlugin implements Plugin<Project> {
             project.tasks.buildAuthzDomain.dependsOn project.tasks.compileAlfa
             project.tasks.dockerPrepare.dependsOn project.tasks.installDist
             project.tasks.buildAdsDockerImage.dependsOn project.tasks.docker
+            project.tasks.buildAuthzDomain.dependsOn project.tasks.readGitCommitInfo
 
             project.tasks.withType(AdmPushTask.class) {
               if (domainFile == null) {

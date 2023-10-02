@@ -57,7 +57,7 @@ abstract class AbstractAdmTask extends DefaultTask {
             throw new RuntimeException("${getRequestMethod()} domain to ${fullUrl} failed with ${req.responseCode}, " +
                     "expected ${getExpectedHttpReturnCode()}. Check your URL to ASM. Respone body: " + req.inputStream.text)
         }
-        handleResposne(() -> req.inputStream.text)
+        handleResposne(() -> req.inputStream.getText("UTF-8"))
 
     }
 

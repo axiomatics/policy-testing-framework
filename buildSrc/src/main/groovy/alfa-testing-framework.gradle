@@ -159,7 +159,64 @@ task stageResourcesForAds(type: Copy) {
     into "${buildDir}/alfa/domain/ads/"
     from 'src/extra'
 }
+task readGitCommitInfo {
+    def final  String  UNKNOWN = "unknown"
+    def final File versionFile =  project.buildDir.toPath().resolve("repositoryAndVersion").toFile()
+    def commit = null
+    def grgit = null
+    def repoAndCommit
 
+    try {
+        grgit = org.ajoberstar.grgit.Grgit.open(currentDir: project.rootDir)
+        commit = grgit.head()
+        def name = grgit.repository.rootDir.getParentFile().getName()
+        repoAndCommit = name + "-" + commit.abbreviatedId
+        logger.info("Git repo successfully loaded")
+    } catch (IllegalStateException e) {
+        repoAndCommit = "na-"+System.currentTimeMillis()
+        logger.debug("Cannot open git. Not in a git project?",e)
+    }
+    outputs.upToDateWhen {
+        def upToDateValue = repoAndCommit
+        def oldValue = versionFile.canRead() ? versionFile.getText("utf-8") : null
+        boolean upToDate =  upToDateValue.equals(oldValue)
+
+        logger.info("New : ${upToDateValue}, Old: ${oldValue}, readGitCommitInfo upToDate  ${upToDate}")
+        return upToDate
+
+    }
+
+    doLast {
+        logger.info("Executing readGitCommitInfo")
+        try {
+            if (grgit != null) {
+
+                def author = commit.author.name + " <" + commit.author.email + ">"
+                def message = commit.shortMessage
+                if (project.extensions.alfa.domainIdentity == null) {
+                    logger.info("setting id to " + repoAndCommit + " in alfa extension")
+                    project.extensions.alfa.domainIdentity = repoAndCommit
+                }
+                project.extensions.alfa.metadata.put("Author", author)
+                project.extensions.alfa.metadata.put("Commit-Message", message)
+                versionFile.write(repoAndCommit, "UTF-8")
+                logger.info("Wrote build/info file and populated extension metadatamap with id "+ repoAndCommit)
+            } else  {
+                logger.info("No git present, wrote id UNKNOWN to build/version and set in extension")
+                versionFile.write(UNKNOWN, "UTF-8")
+                if (project.extensions.alfa.domainIdentity == null) {
+                    project.extensions.alfa.domainIdentity =UNKNOWN
+                }
+            }
+        } catch (IllegalStateException e) {
+            versionFile.write(UNKNOWN, "UTF-8")
+            if (project.extensions.alfa.domainIdentity == null) {
+                project.extensions.alfa.domainIdentity = UNKNOWN
+            }
+            logger.info("Cannot read commit, exception occured. Wrote UNKNOWN to build/version file and set in extension",e)
+        }
+    }
+}
 
 stageAdsFiles.dependsOn stageDeploymentDescriptor
 stageAdsFiles.dependsOn stageResourcesForAds
