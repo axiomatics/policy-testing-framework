@@ -16,16 +16,14 @@ alfa {
         /**
          adm {
          environment 'Dev'
-         envVariable 'LDAP_PIP_URL', 'http://ldap-dev.myorg.com'
          host 'https://myaps.acme.com'
          domainName 'DevStaging'
          oidcCredentials {
-         client_id 'ads'
-         client_secret ''
+            client_id 'ads'
+            client_secret ''
            }
          }
          **/
-
     }
 }
 dependencies {

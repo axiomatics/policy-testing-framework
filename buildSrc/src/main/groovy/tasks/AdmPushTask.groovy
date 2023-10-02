@@ -18,7 +18,7 @@ class AdmPushTask extends AbstractAdmTask {
         com.fasterxml.jackson.dataformat.yaml.YAMLFactory
         File yamlFile = domainFile
         logger.lifecycle("Source file is " + yamlFile.absolutePath);
-        def yamlString = yamlFile.text
+        def yamlString = yamlFile.getText("UTF-8")
         com.fasterxml.jackson.databind.ObjectMapper yamlReader =
                 new com.fasterxml.jackson.databind.ObjectMapper(
                         new com.fasterxml.jackson.dataformat.yaml.YAMLFactory());

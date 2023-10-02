@@ -50,7 +50,7 @@ class AlfaStandaloneJavaGenerator {
         while(var5.hasNext()) {
             resource = (Resource)var5.next();
             if (extraAttributeIdCheck) {
-                logger.info("Calling extra attribute validation before compilation")
+                logger.debug("Calling extra attribute validation before compilation")
                 ExtraAlfaValidator.validate(resource);
             }
             List<Issue> list = validator.validate(resource, CheckMode.ALL, CancelIndicator.NullImpl);

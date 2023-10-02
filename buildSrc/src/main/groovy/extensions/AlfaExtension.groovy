@@ -14,6 +14,8 @@ class AlfaExtension {
     String dockerName
     boolean extraAttributeIdCheck = true
     Project project
+    Map<String,String> metadata = new HashMap<>()
+    String domainIdentity
 
 
     DomainRepositories repositories = new DomainRepositories();
@@ -43,6 +45,7 @@ class AlfaExtension {
                 ", dockerName='" + dockerName + '\'' +
                 ", project=" + project +
                 ", repositories=" + repositories +
+                ", metadata =" + metadata +
                 '}';
     }
 
