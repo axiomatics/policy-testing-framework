@@ -43,7 +43,7 @@ configurations.all {
 
 dependencies {
     testImplementation group: 'junit', name: 'junit', version: '4.13.2'
-    testImplementation "com.axiomatics.cr.alfa.test:alfa-test-framework:1.0.13"
+    testImplementation "com.axiomatics.cr.alfa.test:alfa-test-framework:1.0.14"
 
     domTool(group: 'com.axiomatics.domtool', name: 'domtool', version: '0.9.0')
     domTool(group: 'com.axiomatics.domtool', name: 'domtool-lib', version: '0.9.0')
