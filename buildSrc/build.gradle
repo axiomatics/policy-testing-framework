@@ -15,21 +15,29 @@ plugins {
         }
 
 repositories {
-    gradlePluginPortal()
-    maven {
-        url "s3://axiomatics-cr-maven/release"
-        credentials(AwsCredentials) {
-            accessKey =  envAccessKey
-            secretKey = envSecretKey
+     def offlineLib = rootProject.projectDir.toPath().resolve("../lib").toFile()
+     if (offlineLib.exists()) {
+        println "Running in offline mode using local repository at ${offlineLib}"
+          maven {
+               url uri(offlineLib)
+           }
+     } else {
+        gradlePluginPortal()
+        maven {
+            url "s3://axiomatics-cr-maven/release"
+            credentials(AwsCredentials) {
+                accessKey =  envAccessKey
+                secretKey = envSecretKey
+            }
         }
-    }
-    maven {
-        url "s3://axiomatics-customer-artifacts/releases"
-        credentials(AwsCredentials) {
-            accessKey = envAccessKey
-            secretKey = envSecretKey
+        maven {
+            url "s3://axiomatics-customer-artifacts/releases"
+            credentials(AwsCredentials) {
+                accessKey = envAccessKey
+                secretKey = envSecretKey
+            }
         }
-    }
+     } //!offline
 }
 dependencies {
     implementation "com.axiomatics.alfa:alfac:1.4.1"
