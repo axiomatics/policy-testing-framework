@@ -7,22 +7,30 @@ def myErrOut = new ByteArrayOutputStream();
 def BUILD_ALFA_DEPENDENCIES = project.rootProject.file("build/alfa/dependencies")
 
 repositories {
-    mavenCentral()
-    maven {
-        url "s3://axiomatics-cr-maven/release"
-        credentials(AwsCredentials) {
-            accessKey = System.env.AXIOMATICS_ACCESS_KEY_ID ?: project.findProperty('AXIOMATICS_ACCESS_KEY_ID')
-            secretKey = System.env.AXIOMATICS_SECRET_ACCESS_KEY ?: project.findProperty('AXIOMATICS_SECRET_ACCESS_KEY')
+    def offlineLib = rootProject.projectDir.toPath().resolve("lib").toFile()
+    if (offlineLib.exists()) {
+        logger.debug("Running in offline mode using local repository at ${offlineLib} (2)")
+        maven {
+            url uri(offlineLib)
         }
-    }
-    maven {
-        url "s3://axiomatics-customer-artifacts/releases"
-        credentials(AwsCredentials) {
-            accessKey = System.env.AXIOMATICS_ACCESS_KEY_ID ?: project.findProperty('AXIOMATICS_ACCESS_KEY_ID')
-            secretKey = System.env.AXIOMATICS_SECRET_ACCESS_KEY ?: project.findProperty('AXIOMATICS_SECRET_ACCESS_KEY')
+    } else {
+        mavenCentral()
+        maven {
+            url "s3://axiomatics-cr-maven/release"
+            credentials(AwsCredentials) {
+                accessKey = System.env.AXIOMATICS_ACCESS_KEY_ID ?: project.findProperty('AXIOMATICS_ACCESS_KEY_ID')
+                secretKey = System.env.AXIOMATICS_SECRET_ACCESS_KEY ?: project.findProperty('AXIOMATICS_SECRET_ACCESS_KEY')
+            }
         }
+        maven {
+            url "s3://axiomatics-customer-artifacts/releases"
+            credentials(AwsCredentials) {
+                accessKey = System.env.AXIOMATICS_ACCESS_KEY_ID ?: project.findProperty('AXIOMATICS_ACCESS_KEY_ID')
+                secretKey = System.env.AXIOMATICS_SECRET_ACCESS_KEY ?: project.findProperty('AXIOMATICS_SECRET_ACCESS_KEY')
+            }
+        }
+        //mavenLocal() {metadataSources { artifact() } }
     }
-    //mavenLocal() {metadataSources { artifact() } }
 }
 
 configurations {
