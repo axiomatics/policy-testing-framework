@@ -51,7 +51,7 @@ configurations.all {
 
 dependencies {
     testImplementation group: 'junit', name: 'junit', version: '4.13.2'
-    testImplementation "com.axiomatics.cr.alfa.test:alfa-test-framework:1.0.15"
+    testImplementation "com.axiomatics.cr.alfa.test:alfa-test-framework:1.0.16"
 
     domTool(group: 'com.axiomatics.domtool', name: 'domtool', version: '0.10.1')
     domTool(group: 'com.axiomatics.domtool', name: 'domtool-lib', version: '0.10.1')
@@ -59,7 +59,7 @@ dependencies {
     adsCompile "com.axiomatics.access-decision-service:access-decision-service:1.14.0"
 
     pip "com.axiomatics.attribute-connectors.http:http-attribute-connector:5.1.0@jar"
-    pip "com.axiomatics.attribute-connectors.parser:parser-attribute-connectors:1.0.0@jar"
+    pip "com.axiomatics.attribute-connectors.parser:parser-attribute-connectors:1.0.1@jar"
     pip "com.axiomatics.attribute-connectors.sql:sql-attribute-connector:6.2.2@jar"
     pip "com.axiomatics.attribute-connectors.ldap:ldap-attribute-connector:6.3.0@jar"
     pip "com.axiomatics.attribute-connectors.table:table-attribute-connector:7.0.0@jar"

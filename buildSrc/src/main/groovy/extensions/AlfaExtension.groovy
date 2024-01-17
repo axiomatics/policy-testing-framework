@@ -17,7 +17,6 @@ class AlfaExtension {
     Map<String,String> metadata = new HashMap<>()
     String domainIdentity
 
-
     DomainRepositories repositories = new DomainRepositories();
 
     AlfaExtension(Project project) {
