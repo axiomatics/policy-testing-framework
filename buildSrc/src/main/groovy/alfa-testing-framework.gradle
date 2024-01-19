@@ -58,7 +58,7 @@ dependencies {
 
     adsCompile "com.axiomatics.access-decision-service:access-decision-service:1.14.0"
 
-    pip "com.axiomatics.attribute-connectors.http:http-attribute-connector:5.1.0@jar"
+    pip "com.axiomatics.attribute-connectors.http:http-attribute-connector:5.2.0@jar"
     pip "com.axiomatics.attribute-connectors.parser:parser-attribute-connectors:1.0.1@jar"
     pip "com.axiomatics.attribute-connectors.sql:sql-attribute-connector:6.2.2@jar"
     pip "com.axiomatics.attribute-connectors.ldap:ldap-attribute-connector:6.3.0@jar"
