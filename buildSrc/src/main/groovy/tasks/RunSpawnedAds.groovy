@@ -41,6 +41,16 @@ class RunSpawnedAds extends DefaultTask {
         cmds << java
         cmds << "-cp"
         cmds << joinedClasspath
+
+        if (System.getProperty("javax.net.ssl.trustStore") != null) {
+            cmds << "-Djavax.net.ssl.trustStore=" + System.getProperty("javax.net.ssl.trustStore")
+        }
+        if (System.getProperty("javax.net.ssl.trustStorePassword") != null) {
+            cmds << "-Djavax.net.ssl.trustStorePassword=" + System.getProperty("javax.net.ssl.trustStorePassword")
+        }
+            if (System.getProperty("javax.net.ssl.trustStoreType") != null) {
+                cmds << "-Djavax.net.ssl.trustStoreType=" + System.getProperty("javax.net.ssl.trustStoreType")
+            }
         cmds << "com.axiomatics.ads.App"
         cmds << "server"
 
@@ -82,25 +92,26 @@ class RunSpawnedAds extends DefaultTask {
 
         }
         def result = adm.host + String.format(template,adm.alfa.namespace,adm.domainName)
-        logger.lifecycle("Location of domain.yaml is ${result}" )
+
         return result
     }
 
     private String getAuthenticationYaml() {
-        boolean isBasic = adm.basicCredentials != null
-        if (isBasic) {
-            return getBasicAuthenticationYaml()
-        } else {
-            return getOidcAuthenticationYaml()
-        }
+
+      return getBasicAuthenticationYaml() +
+         getOidcAuthenticationYaml()
+
 
     }
 
     @Internal
-    String getDeploymentTemplate() { """
+    String getDeploymentTemplate() {
+        def url = getDomainUrl();
+        logger.lifecycle("Location of domain.yaml is ${url}" )
+        return """
           
 license: ${adm.project.getProjectDir()}/${config.licenseFile}
-domain: ${getDomainUrl()}
+domain: ${url}
 
 audit:
   mode: verbose
@@ -122,7 +133,7 @@ server:
     appenders:
       - type: console
 logging:
-  level:  \${LOGLEVEL:-${logger.isInfoEnabled()?"DEBUG":"WARN"}}
+  level: WARN  
   loggers:
     "org.apache.jcs": \${LOGLEVEL:-${logger.isInfoEnabled()?"WARN":"INFO"}}
     "com.axiomatics": \${LOGLEVEL:-${logger.isInfoEnabled()?"DEBUG":"INFO"}}
@@ -136,19 +147,60 @@ logging:
     String getBasicAuthenticationYaml() {
      """
 httpClientConfiguration:
+  ${getBasicCredentials()}
+  ${getTlsConfig()}
+"""
+    }
+
+    @Internal getBasicCredentials() {
+        boolean isBasic = adm.basicCredentials != null
+        if (isBasic) {
+
+        return """
   domainUser: ${adm.basicCredentials.username}
   domainPassword: ${adm.basicCredentials.password}
   timeout: 30 seconds
+
 """
+    } else {return ""}
+
     }
     @Internal
      String getOidcAuthenticationYaml() {
-        """
+        boolean isBasic = adm.basicCredentials != null
+        if (isBasic) {
+            return ""
+        } else {
+            """
 authHttpClientConfiguration:
   clientId: ${adm.oidcCredentials.client_id}
   clientSecret: ${adm.oidcCredentials.client_secret}
   tokenUri: ${adm.host}${adm.oidcCredentials.token_uri}
   timeout: 30 seconds
+  ${getTlsConfig()}
 """
+        }
     }
+
+    private String getTlsConfig() {
+        String file = System.getProperty("javax.net.ssl.trustStore")
+        if (file == null) {
+            if (getDomainUrl().startsWith("https")) {
+                println "No explicit truststore to ADM set, using implicit from JAVA or OS. Specify with javax.net.ssl.keyStoreType system properties."
+            }
+            return "";
+        }
+
+        println ("  Truststore for ADS to ADM set: " + file)
+        String password  = System.getProperty("javax.net.ssl.trustStorePassword")
+        String type = System.getProperty("javax.net.ssl.trustStoreType", "JKS")
+        return """
+  tls:
+    trustStorePath: ${file}
+    trustStorePassword: ${password}
+    trustStoreType: ${type}
+
+""";
+    }
+
 }
