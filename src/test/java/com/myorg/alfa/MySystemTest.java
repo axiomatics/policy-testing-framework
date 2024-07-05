@@ -1,10 +1,10 @@
 package com.myorg.alfa;
 
-import com.axiomatics.cr.alfa.test.junit.AlfaTestRule;
+import com.axiomatics.cr.alfa.test.junit.AlfaExtension;
 import com.axiomatics.cr.alfa.test.junit.TestRequest;
 import com.axiomatics.cr.alfa.test.junit.TestResponse;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import static com.axiomatics.cr.alfa.test.junit.matchers.AlfaMatchers.permit;
 import static com.axiomatics.cr.alfa.test.junit.matchers.AttributeAssignmentMatcher.withText;
@@ -13,12 +13,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 public class MySystemTest {
 
-    @Rule
-    public AlfaTestRule rule = new AlfaTestRule().withAttributeConnectors();
+    @RegisterExtension
+    public AlfaExtension alfa = new AlfaExtension().withAttributeConnectors();
 
     @Test
     public void shouldGiveMartinAccessToResource1() {
-        TestRequest target = rule.newTestRequest()
+        TestRequest target = alfa.newTestRequest()
                 .with("user.identity", "martin")
                 .with("resource.identity", "1");
 
@@ -30,7 +30,7 @@ public class MySystemTest {
 
     @Test
     public void shouldGiveCeciliaAccessToResource1() {
-        TestRequest target = rule.newTestRequest()
+        TestRequest target = alfa.newTestRequest()
                 .with("user.identity", "cecilia")
                 .with("resource.identity", "1");
 
@@ -42,7 +42,7 @@ public class MySystemTest {
 
     @Test
     public void shouldNotGiveCeciliaAccessToResource2() {
-        TestRequest target = rule.newTestRequest()
+        TestRequest target = alfa.newTestRequest()
                 .with("user.identity", "cecilia")
                 .with("resource.identity", "2");
 

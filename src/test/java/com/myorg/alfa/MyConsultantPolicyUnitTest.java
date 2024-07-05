@@ -1,10 +1,10 @@
 package com.myorg.alfa;
 
-import com.axiomatics.cr.alfa.test.junit.AlfaTestRule;
+import com.axiomatics.cr.alfa.test.junit.AlfaExtension;
 import com.axiomatics.cr.alfa.test.junit.TestRequest;
 import com.axiomatics.cr.alfa.test.junit.TestResponse;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import static com.axiomatics.cr.alfa.test.junit.matchers.AlfaMatchers.permit;
 import static org.hamcrest.CoreMatchers.is;
@@ -13,12 +13,13 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 public class MyConsultantPolicyUnitTest {
 
-    @Rule
-    public AlfaTestRule rule = new AlfaTestRule().withMainPolicy("consultants.Main");
+
+    @RegisterExtension
+    public AlfaExtension alfa = new AlfaExtension().withMainPolicy("consultants.Main");
 
     @Test
     public void shouldPermitIfUserAndResourceAreInSameLocation() {
-        TestRequest target = rule.newTestRequest()
+        TestRequest target = alfa.newTestRequest()
                 .with("user.role", "consultant")
                 .with("user.location", "hawaii")
                 .with("resource.location", "hawaii");
@@ -30,7 +31,7 @@ public class MyConsultantPolicyUnitTest {
 
     @Test
     public void shouldNotPermitIfUserAndResourceAreInDifferentLocation() {
-        TestRequest target = rule.newTestRequest()
+        TestRequest target = alfa.newTestRequest()
                 .with("user.role", "consultant")
                 .with("user.location", "hawaii")
                 .with("resource.location", "stockholm");
