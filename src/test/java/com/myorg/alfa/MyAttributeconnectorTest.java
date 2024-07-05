@@ -1,10 +1,10 @@
 package com.myorg.alfa;
 
 
-import com.axiomatics.cr.alfa.test.junit.AlfaTestRule;
+import com.axiomatics.cr.alfa.test.junit.AlfaExtension;
 import com.axiomatics.cr.alfa.test.junit.AttributeConnector;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import java.util.List;
 
@@ -13,12 +13,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 public class MyAttributeconnectorTest {
 
-    @Rule
-    public AlfaTestRule rule = new AlfaTestRule();
+    @RegisterExtension
+    public AlfaExtension alfa = new AlfaExtension();
 
     @Test
     public void shouldGetRoleConsultantForCecilia() {
-        AttributeConnector target = rule.newAttributeTest("ourConnector");
+        AttributeConnector target = alfa.newAttributeTest("ourConnector");
 
         List<String> result = target.lookup("user.role").by("user.identity", "cecilia");
 
@@ -27,7 +27,7 @@ public class MyAttributeconnectorTest {
 
     @Test
     public void shouldGetRoleManagerForMartin() {
-        AttributeConnector target = rule.newAttributeTest("ourConnector");
+        AttributeConnector target = alfa.newAttributeTest("ourConnector");
 
         List<String> result = target.lookup("user.role").by("user.identity", "martin");
 

@@ -7,6 +7,7 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import tasks.AdmPushTask
 import tasks.AlfaCompilationTask
+import org.gradle.jvm.toolchain.JavaLanguageVersion
 
 class AlfaPlugin implements Plugin<Project> {
 
@@ -24,6 +25,11 @@ class AlfaPlugin implements Plugin<Project> {
         project.logger.info("Access key id found ${accessKey}")
         project.extensions.create('alfa', AlfaExtension, project)
         project.plugins.apply('java')
+        project.java {
+            toolchain {
+                languageVersion = JavaLanguageVersion.of(17)
+            }
+        }
         project.plugins.apply('distribution')
         project.getPluginManager().apply("com.palantir.docker")
         project.tasks.register("buildAuthzDomain", BuildAuthZDomainTask.class) {
@@ -76,6 +82,7 @@ class AlfaPlugin implements Plugin<Project> {
                     logger.info("Environment is ${environment}")
                     workingDir "src/extra"
                 }
+                useJUnitPlatform()
                 outputs.upToDateWhen {false}
                 environment "ALFA_TEST_REMOTE_MAIN_POLICY" , "${project.extensions.alfa.mainpolicy}"
                 testLogging {
@@ -88,7 +95,8 @@ class AlfaPlugin implements Plugin<Project> {
                     showCauses true
                     showExceptions true
                     showStackTraces true
-                    showStandardStreams false
+
+                    showStandardStreams logger.isDebugEnabled()
                 }
             }
             project.tasks.compileAlfa {
