@@ -18,3 +18,11 @@ jobs:
         AXIOMATICS_ACCESS_KEY_ID: ${{ secrets.AXIOMATICS_ACCESS_KEY_ID}}
         AXIOMATICS_SECRET_ACCESS_KEY: ${{ secrets.AXIOMATICS_SECRET_ACCESS_KEY }}
       run: ./gradlew test buildAuthzDomain
+
+    # This step is only for illustrating purposes.
+    # Normally you would deploy or publish this resulting file
+    # to a location where it is accissibly by a PDP.
+    - name: Print result
+      run: | 
+        echo "Printing resulting domain.yaml:"
+        cat build/alfa/domain/ads/domain.yaml
