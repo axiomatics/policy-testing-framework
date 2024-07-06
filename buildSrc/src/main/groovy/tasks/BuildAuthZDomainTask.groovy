@@ -49,7 +49,7 @@ class BuildAuthZDomainTask extends DefaultTask {
 
     def Path createMetadataFile(Path srcMetadataYaml, Map<String, String> inProcessMetaDataMap) {
         Map<String,String> metadataMap = new HashMap();
-        logger.info("InProcessMetaDataMap contains ${inProcessMetaDataMap.entrySet().size()} entries")
+        logger.info("InProcessMetaDataMap contains ${inProcessMetaDataMap.entrySet().size()} entries; " + inProcessMetaDataMap.inspect())
         metadataMap.putAll(inProcessMetaDataMap)
 
         if (srcMetadataYaml != null && srcMetadataYaml.toFile().canRead()) {
@@ -63,7 +63,7 @@ class BuildAuthZDomainTask extends DefaultTask {
                         logger.info("Got " + srcMetadataMap.size() + " entries from " + srcMetadataYaml);
                         metadataMap.putAll(srcMetadataMap)
                     } catch (com.fasterxml.jackson.databind.exc.MismatchedInputException e) {
-                        logger.info("No entries to map found in " + metaDataFile,e);
+                        logger.info("No entries to map found in " + metaDataFile +". Content " + metaDataFile.text ,e);
                     }
 
 
