@@ -63,7 +63,7 @@ class BuildAuthZDomainTask extends DefaultTask {
                         logger.info("Got " + srcMetadataMap.size() + " entries from " + srcMetadataYaml);
                         metadataMap.putAll(srcMetadataMap)
                     } catch (com.fasterxml.jackson.databind.exc.MismatchedInputException e) {
-                        logger.info("No entries to map found in " + metaDataFile +". Content " + metaDataFile.text ,e);
+                        logger.info("No entries to map found in " + metaDataFile +". Content :" + metaDataFile.text + ". Exception below only information:",e);
                     }
 
 
