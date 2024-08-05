@@ -9,6 +9,8 @@ import tasks.AdmPushTask
 import tasks.AlfaCompilationTask
 import org.gradle.jvm.toolchain.JavaLanguageVersion
 
+import java.nio.file.Files
+
 class AlfaPlugin implements Plugin<Project> {
 
     void apply(Project project) {
@@ -81,6 +83,9 @@ class AlfaPlugin implements Plugin<Project> {
                 doFirst {
                     logger.info("Environment is ${environment}")
                     workingDir "src/extra"
+                    if (!workingDir.exists()) {
+                        Files.createDirectories(workingDir.toPath())
+                    }
                 }
                 useJUnitPlatform()
                 outputs.upToDateWhen {false}
