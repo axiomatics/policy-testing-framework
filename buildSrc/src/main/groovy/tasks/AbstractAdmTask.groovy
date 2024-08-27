@@ -39,7 +39,10 @@ abstract class AbstractAdmTask extends DefaultTask {
         def fullUrl = getUrl()
         def body = getMakeBody()
         URLConnection req = new URL(fullUrl).openConnection()
-
+        def truststoreFile  = ""+ System.getProperty("javax.net.ssl.trustStorePassword")
+        boolean readable = new File(truststoreFile).canRead();
+        logger.info("Truststore file from system properties: '" + truststoreFile + "', file exists and readable: " + readable);
+        logger.lifecycle("Calling ADS at " + fullUrl.toString());
         if (isBasic) {
             req.setRequestProperty("Authorization", getBasicAuthenticationHeader(
                     adm.basicCredentials.username, adm.basicCredentials.password))
