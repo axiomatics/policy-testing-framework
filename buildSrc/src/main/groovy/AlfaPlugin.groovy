@@ -100,7 +100,7 @@ class AlfaPlugin implements Plugin<Project> {
                     showExceptions true
                     showStackTraces true
 
-                    showStandardStreams logger.isDebugEnabled()
+                    showStandardStreams true
                 }
             }
             project.tasks.compileAlfa {
