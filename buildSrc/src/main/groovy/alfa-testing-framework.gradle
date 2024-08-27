@@ -5,7 +5,7 @@ def prefix = "http://axiomatics.com/alfa/identifier/"
 
 def myErrOut = new ByteArrayOutputStream();
 def BUILD_ALFA_DEPENDENCIES = project.rootProject.file("build/alfa/dependencies")
-
+rootProject.plugins.apply('java')
 repositories {
     def offlineLib = rootProject.projectDir.toPath().resolve("lib").toFile()
     if (offlineLib.exists()) {
@@ -54,6 +54,7 @@ configurations.all {
 dependencies {
     testImplementation(platform("org.junit:junit-bom:5.11.0-M2"))
     testImplementation('org.junit.jupiter:junit-jupiter')
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     testImplementation group: 'org.hamcrest', name: 'hamcrest', version: '2.2'
     testImplementation "com.axiomatics.cr.alfa.test:alfa-test-framework:1.0.29"
 

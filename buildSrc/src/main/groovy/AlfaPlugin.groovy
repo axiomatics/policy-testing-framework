@@ -26,7 +26,6 @@ class AlfaPlugin implements Plugin<Project> {
         }
         project.logger.info("Access key id found ${accessKey}")
         project.extensions.create('alfa', AlfaExtension, project)
-        project.plugins.apply('java')
         project.java {
             toolchain {
                 languageVersion = JavaLanguageVersion.of(17)
