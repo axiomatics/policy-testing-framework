@@ -35,13 +35,14 @@ abstract class AbstractAdmTask extends DefaultTask {
         }
 
         boolean isBasic = adm.basicCredentials != null
-        logger.info("Auth to ADM, basicAuth: ${isBasic}")
+        logger.info("Auth to ADM, basicAuth (else token auth): ${isBasic}. CWD " + new File(".").getAbsolutePath() )
         def fullUrl = getUrl()
         def body = getMakeBody()
         URLConnection req = new URL(fullUrl).openConnection()
         def truststoreFile  = ""+ System.getProperty("javax.net.ssl.trustStorePassword")
         boolean readable = new File(truststoreFile).canRead();
-        logger.info("Truststore file from system properties: '" + truststoreFile + "', file exists and readable: " + readable);
+        def truststoreFileAbsolute =  new File(truststoreFile).getAbsolutePath()
+        logger.info("Truststore file from system properties: '" + truststoreFileAbsolute + "', file exists and readable: " + readable);
         logger.lifecycle("Calling ADS at " + fullUrl.toString());
         if (isBasic) {
             req.setRequestProperty("Authorization", getBasicAuthenticationHeader(

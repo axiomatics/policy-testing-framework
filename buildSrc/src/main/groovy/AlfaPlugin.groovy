@@ -89,6 +89,10 @@ class AlfaPlugin implements Plugin<Project> {
                 useJUnitPlatform()
                 outputs.upToDateWhen {false}
                 environment "ALFA_TEST_REMOTE_MAIN_POLICY" , "${project.extensions.alfa.mainpolicy}"
+                if (project.extensions.alfa.withVisualTrace != null) {
+                    project.logger.info("Setting ALFA_WITH_VISUAL_TRACE to ${project.extensions.alfa.withVisualTrace}" )
+                    environment "ALFA_WITH_VISUAL_TRACE" , "${project.extensions.alfa.withVisualTrace}"
+                }
                 testLogging {
                     events TestLogEvent.FAILED,
                             TestLogEvent.SKIPPED,
