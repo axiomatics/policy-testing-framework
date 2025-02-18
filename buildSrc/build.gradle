@@ -19,7 +19,7 @@ plugins {
 repositories {
      def offlineLib = rootProject.projectDir.toPath().resolve("../lib").toFile()
      if (offlineLib.exists()) {
-        println "Running in offline mode using local repository at ${offlineLib}"
+          logger.debug("Running in offline mode using local repository at ${offlineLib} (3)")
           maven {
                url uri(offlineLib)
            }

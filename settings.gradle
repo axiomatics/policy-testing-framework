@@ -1,20 +1,23 @@
 buildscript {
-       repositories {
-        def offlineLib = rootProject.projectDir.toPath().resolve("../lib").toFile()
-        if (offlineLib.exists()) {
-            println "Running in offline mode using local repository at ${offlineLib}"
-            maven {
-                url uri(offlineLib)
+    pluginManagement {
+        repositories {
+            def offlineLib = rootProject.projectDir.toPath().resolve("lib").toFile()
+            if (offlineLib.exists()) {
+                println "Running in offline mode using local repository at ${offlineLib}"
+                maven {
+                    url uri(offlineLib)
+                }
+            } else {
+                logger.debug("Online mode, because ${offlineLib} does not exist")
+                gradlePluginPortal()
+
             }
-        } else {
-          gradlePluginPortal()
-
-        } //!offline
+        }
     }
-
 }
 
 plugins {
     id "org.gradle.toolchains.foojay-resolver-convention" version "0.9.0"
 }
-rootProject.name = 'my-alfa-project'
+
+rootProject.name = 'my-alfa-project' // TODO - This is the name of your project
