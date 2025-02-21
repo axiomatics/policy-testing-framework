@@ -48,7 +48,7 @@ dependencies {
     implementation(group: 'info.picocli', name: 'picocli', version: '4.7.1')
     implementation(group: 'com.axiomatics.domtool', name: 'domtool-lib', version: '0.10.1')
     implementation "com.palantir.gradle.docker:gradle-docker:0.36.0"
-    implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.17.1"
+    implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.18.2"
     implementation 'org.apache.httpcomponents:httpclient:4.5.14'
     implementation 'org.ajoberstar.grgit:grgit-core:5.2.2'
 }
