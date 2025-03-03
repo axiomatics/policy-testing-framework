@@ -27,8 +27,6 @@ alfa {
     }
 }
 dependencies {
-    //Add extra files for Ads and Docker image runtime
-    // ads files('truststore.jks')
 }
 
 test {
