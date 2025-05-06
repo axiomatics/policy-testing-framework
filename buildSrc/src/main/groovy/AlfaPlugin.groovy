@@ -163,6 +163,13 @@ class AlfaPlugin implements Plugin<Project> {
               }
             }
 
+            project.tasks.withType(Test) {
+                File xacmlOutputDir = project.tasks.named("compileAlfa").get().outputs.files.singleFile
+                logger.info("Setting XACML_XML_DIR_BY_GRADLE_TASK to ${xacmlOutputDir}")
+                it.dependsOn project.tasks.named("compileAlfa")
+                it.environment.put("XACML_XML_DIR_BY_GRADLE_TASK", xacmlOutputDir.getAbsolutePath())
+            }
+
             project.logger.info("Project after evaluate ends")
         } //after evaluate
         project.logger.info("Apply alfa plugin ends")

@@ -74,7 +74,7 @@ dependencies {
     //pip "com.axiomatics.cr.pip:http-pip:2023.03.10"
     //pip "com.axiomatics.cr.pip:parser-pip:2022.01.21-SNAPSHOT"
 
-    alfac "com.axiomatics.alfa:alfac:1.4.1"
+    alfac "com.axiomatics.alfa:alfac:1.5.2"
 }
 configurations.pip {
     exclude group: 'org.apache.httpcomponents' //included in ADS 1.10.0
