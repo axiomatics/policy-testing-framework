@@ -55,7 +55,7 @@ class BuildAuthZDomainTask extends DefaultTask {
         if (srcMetadataYaml != null && srcMetadataYaml.toFile().canRead()) {
             try {
                 logger.info("Reading metadata from " + srcMetadataYaml)
-                ObjectMapper objectMapper = new ObjectMapper(new com.fasterxml.jackson.dataformat.yaml.YAMLFactory());
+                ObjectMapper objectMapper = new ObjectMapper(new com.fasterxml.jackson.dataformat.yaml.YAMLFactory()); //3 mb limit ok, just metadata yaml
                 File metaDataFile = srcMetadataYaml.toFile();
 
                     try {

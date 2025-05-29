@@ -15,7 +15,7 @@ public class MyConsultantPolicyUnitTest {
 
 
     @RegisterExtension
-    public AlfaExtension alfa = new AlfaExtension().withMainPolicy("consultants.Main");
+    public AlfaExtension alfa = new AlfaExtension().withMainPolicy("consultants.Consultants");
 
     @Test
     public void shouldPermitIfUserAndResourceAreInSameLocation() {

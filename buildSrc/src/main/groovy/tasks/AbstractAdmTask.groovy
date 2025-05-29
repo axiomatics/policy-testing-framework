@@ -43,7 +43,7 @@ abstract class AbstractAdmTask extends DefaultTask {
         boolean readable = new File(truststoreFile).canRead();
         def truststoreFileAbsolute =  new File(truststoreFile).getAbsolutePath()
         logger.info("Truststore file from system properties: '" + truststoreFileAbsolute + "', file exists and readable: " + readable);
-        logger.lifecycle("Calling ADS at " + fullUrl.toString());
+        logger.lifecycle("Calling "+getServiceName()+" at " + fullUrl.toString());
         if (isBasic) {
             req.setRequestProperty("Authorization", getBasicAuthenticationHeader(
                     adm.basicCredentials.username, adm.basicCredentials.password))
@@ -129,6 +129,9 @@ abstract class AbstractAdmTask extends DefaultTask {
 
     @Internal
     protected abstract int getExpectedHttpReturnCode();
+
+    @Internal
+    protected abstract String getServiceName();
 
 
     protected abstract void handleResposne(Supplier<String> response);
