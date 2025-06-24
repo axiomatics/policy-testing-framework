@@ -68,11 +68,6 @@ dependencies {
     pip "com.axiomatics.attribute-connectors.sql:sql-attribute-connector:6.3.0@jar"
     pip "com.axiomatics.attribute-connectors.ldap:ldap-attribute-connector:6.3.1@jar"
     pip "com.axiomatics.attribute-connectors.table:table-attribute-connector:7.1.0@jar"
-    pip "com.axiomatics.cr.pip:constant-pip:2023.12.08"
-
-    //Uncomment to enable deprecated HTTP and Parser connectors
-    //pip "com.axiomatics.cr.pip:http-pip:2023.03.10"
-    //pip "com.axiomatics.cr.pip:parser-pip:2022.01.21-SNAPSHOT"
 
     alfac "com.axiomatics.alfa:alfac:1.5.2"
 }

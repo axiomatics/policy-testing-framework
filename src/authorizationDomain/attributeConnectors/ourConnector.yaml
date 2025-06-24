@@ -1,4 +1,4 @@
-className: com.axiomatics.cr.pip.constant.ConstantAttributeConnector
+className: com.axiomatics.attributeconnector.parser.json.ConnectorModule
 provides:
   - user.role
   - resource.location
