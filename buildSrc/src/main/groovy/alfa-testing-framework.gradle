@@ -52,11 +52,19 @@ configurations.all {
 
 
 dependencies {
+
+    // The following 4 libs are needed because our PIPs decleare them as providedByHost and thus we need to manually
+    // include them.
+    implementation ("jakarta.xml.bind:jakarta.xml.bind-api:2.3.3")
+    implementation ("javax.activation:activation:1.1.1")
+    implementation("org.glassfish.jaxb:jaxb-runtime:2.4.0-b180830.0438")
+    implementation("javax.xml.bind:jaxb-api:2.4.0-b180830.0359")
+
     testImplementation(platform("org.junit:junit-bom:5.11.4"))
     testImplementation('org.junit.jupiter:junit-jupiter')
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     testImplementation group: 'org.hamcrest', name: 'hamcrest', version: '3.0'
-    testImplementation "com.axiomatics.alfa.test:alfa-test-framework:1.0.43-SNAPSHOT"
+    testImplementation "com.axiomatics.alfa.test:axiomatics-policy-devops:1.0.43-SNAPSHOT"
 
     domTool(group: 'com.axiomatics.domtool', name: 'domtool', version: '0.10.1')
     domTool(group: 'com.axiomatics.domtool', name: 'domtool-lib', version: '0.10.1')

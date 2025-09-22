@@ -1,10 +1,10 @@
-## Axiomatics Policy Testing Framework
+## Axiomatics Policy Devops
 
 A project that will _[add your own description of your project]._
 
 ## Documentation
 
-Online documentation from Axiomatics is available at https://docs.axiomatics.com/policy-testing-framework/
+Online documentation from Axiomatics is available at https://docs.axiomatics.com/axiomatics-policy-devops/
 
 ### Quick start
 
