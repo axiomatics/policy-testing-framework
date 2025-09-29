@@ -14,7 +14,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class MySystemTest {
 
     @RegisterExtension
-    public AlfaExtension alfa = new AlfaExtension().withAttributeConnectors().withEvaluationTrace();
+    public AlfaExtension alfa = new AlfaExtension().withAttributeConnectors();
 
     @Test
     public void shouldGiveMartinAccessToResource1() {

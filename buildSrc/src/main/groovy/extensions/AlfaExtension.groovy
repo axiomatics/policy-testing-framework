@@ -16,7 +16,7 @@ class AlfaExtension {
     Project project
     Map<String,String> metadata = new HashMap<>()
     String domainIdentity
-    Boolean withVisualTrace = null
+    Boolean withVisualTrace = true
 
     DomainRepositories repositories = new DomainRepositories();
 
@@ -85,7 +85,7 @@ class AlfaExtension {
             adm = lAdm
             config = lAlfa
             admHash = lAdm.hashCode()
-            classpath = project.configurations.ads
+            classpath = project.configurations.adsRuntimeV1
 
         }
 

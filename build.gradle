@@ -8,6 +8,7 @@ group = 'com.myorg.alfa'
 alfa {
     namespace "MyProject"
     mainpolicy "acme.Main"
+    //withVisualTrace false //Disable evaluation traces of tests, speeds up the tests if you do not need the traces.
 
     licenseFile "license/axiomatics_PDP.license"
 

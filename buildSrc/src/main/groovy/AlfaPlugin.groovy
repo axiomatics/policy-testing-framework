@@ -124,22 +124,9 @@ class AlfaPlugin implements Plugin<Project> {
 
             }
 
-
-            project.tasks.stageLicenseFile {
-                def ilicenseFile = project.extensions.alfa.licenseFile
-                def filename = new File(ilicenseFile).getName()
-                logger.info("License file at ${filename}")
-                def idstDir = "${project.buildDir}/alfa/domain/ads/"
-                inputs.property("srcFile", ilicenseFile)
-                inputs.property("filename", filename)
-                inputs.property("dstDir", idstDir)
-                inputs.files project.file(ilicenseFile)
-                outputs.files project.file("${idstDir}/${filename}")
-
-            }
             project.extensions.distributions.main {
                 contents {
-                    into ('lib')    { from  project.configurations.ads }
+                    into ('lib')    { from  project.configurations.adsRuntimeV1  }
                     into ('domain') { from  project.buildAuthzDomain,
                             alfa.licenseFile,
                             alfa.deploymentDescriptor
@@ -147,6 +134,7 @@ class AlfaPlugin implements Plugin<Project> {
 
                 }
             }
+
             def docker = project.extensions.docker
             docker.files project.installDist.outputs
             docker.name  project.extensions.alfa.dockerName == null ? project.name.toLowerCase() : project.extensions.alfa.dockerName.toLowerCase()
