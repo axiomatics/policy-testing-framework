@@ -39,7 +39,7 @@ test {
 /**
  task test_LocalEnv(type: Test) {
  group "verification"
- environment "ALFA_TEST_REMOTE_URL", "http://127.0.0.1:8081/authorize"
+ environment "ALFA_TEST_REMOTE_URL", "http://127.0.0.1:8080/authorize"
  environment "ALFA_TEST_REMOTE_USER", "pdp-user"
  environment "ALFA_TEST_REMOTE_PASSWORD", "secret"
  }
