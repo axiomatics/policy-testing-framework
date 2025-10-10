@@ -1,6 +1,6 @@
 namespace consultants {
 advice responseAdvice = "responseAdvice"
-    policy Main {
+    policy Consultants {
         target
             clause user.role == "consultant"
         apply firstApplicable

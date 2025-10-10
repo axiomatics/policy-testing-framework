@@ -10,10 +10,10 @@
         <appender-ref ref="CONSOLE"/>
     </logger>
 
-    <logger name="com.axiomatics" level="WARN" additivity="false">
+    <logger name="com.axiomatics" level="INFO" additivity="false">
         <appender-ref ref="CONSOLE"/>
     </logger>
-    <logger name="io.axiomatics" level="WARN" additivity="false">
+    <logger name="io.axiomatics" level="INFO" additivity="false">
         <appender-ref ref="CONSOLE"/>
     </logger>
 

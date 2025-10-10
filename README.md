@@ -1,10 +1,10 @@
-## Axiomatics Policy Testing Framework
+## Axiomatics Policy Devops
 
 This repository is the entry point to start with Attribute Base Access Control (ABAC) and Policy-as-code from Axiomatics.
 
 ## Documentation
 
-Online documentation from Axiomatics is available at https://docs.axiomatics.com/policy-testing-framework/
+Online documentation from Axiomatics is available at https://docs.axiomatics.com/axiomatics-policy-devops/
 
 ALFA introduction available at https://axiomatics.github.io/alfa-vscode-doc/docs/alfa-introduction/introduction/
 

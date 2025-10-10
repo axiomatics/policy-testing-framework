@@ -17,6 +17,7 @@ import org.gradle.api.tasks.TaskExecutionException
 
 import java.util.stream.Collectors
 
+@org.gradle.api.tasks.CacheableTask
 class AlfaCompilationTask extends DefaultTask implements Runnable {
 
     @Input
@@ -28,12 +29,12 @@ class AlfaCompilationTask extends DefaultTask implements Runnable {
 
             Set<String> collect = inputs.files.toList().stream().map(File::toString).
                     map(s -> "file:/" + s.replace("\\", "/")).collect(Collectors.toSet());
-            String out = outputs.getFiles().singleFile
-            logger.info("Compiling ${collect.size()} ALFA files to ${out}: ${collect.stream().collect(Collectors.joining(","))}")
+            String outDir = outputs.getFiles().singleFile
+            logger.info("Compiling ${collect.size()} ALFA files to ${outDir}: ${collect.stream().collect(Collectors.joining(","))}")
 
             outputs.previousOutputFiles.forEach(File::delete)
 
-            List<Issue> issues = getLanguage(extraAttributeIdCheck, this.logger).run(collect, out)
+            List<Issue> issues = getLanguage(extraAttributeIdCheck, this.logger).run(collect, outDir)
 
             if (!issues.isEmpty()) {
                 System.err.println("ERROR: " + issues.size() + " Alfa error(s) occurred during build:")

@@ -19,7 +19,7 @@ plugins {
 repositories {
      def offlineLib = rootProject.projectDir.toPath().resolve("../lib").toFile()
      if (offlineLib.exists()) {
-        println "Running in offline mode using local repository at ${offlineLib}"
+          logger.debug("Running in offline mode using local repository at ${offlineLib} (3)")
           maven {
                url uri(offlineLib)
            }
@@ -43,12 +43,12 @@ repositories {
      } //!offline
 }
 dependencies {
-    implementation "com.axiomatics.alfa:alfac:1.4.1"
+    implementation "com.axiomatics.alfa:alfac:1.5.2"
     implementation(group: 'com.axiomatics.domtool', name: 'domtool', version: '0.10.1')
     implementation(group: 'info.picocli', name: 'picocli', version: '4.7.1')
     implementation(group: 'com.axiomatics.domtool', name: 'domtool-lib', version: '0.10.1')
-    implementation "com.palantir.gradle.docker:gradle-docker:0.36.0"
-    implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.17.1"
+    implementation "com.palantir.gradle.docker:gradle-docker:0.37.0"
+    implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.20.0"
     implementation 'org.apache.httpcomponents:httpclient:4.5.14'
     implementation 'org.ajoberstar.grgit:grgit-core:5.2.2'
 }

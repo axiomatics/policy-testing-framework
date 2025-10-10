@@ -1,12 +1,26 @@
 package tasks
 
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
+import com.fasterxml.jackson.databind.ObjectMapper
 import groovy.json.JsonSlurper
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.Internal
+import org.yaml.snakeyaml.LoaderOptions
 
 import java.util.function.Supplier
 
 class AdmPushTask extends AbstractAdmTask {
+
+
+    private static final ObjectMapper objectMapper
+    static {
+        LoaderOptions loaderOptions = new LoaderOptions();
+        loaderOptions.setCodePointLimit(100 * 1024 * 1024); //Sets maximum YAML size to 100 MB
+        YAMLFactory yamlFactory = YAMLFactory.builder()
+                .loaderOptions(loaderOptions)
+                .build();
+        objectMapper = new ObjectMapper(yamlFactory);
+    }
 
     @InputFile
     File domainFile
@@ -18,12 +32,11 @@ class AdmPushTask extends AbstractAdmTask {
         com.fasterxml.jackson.dataformat.yaml.YAMLFactory
         File yamlFile = domainFile
         logger.info("Source file is " + yamlFile.absolutePath);
-        def yamlString = yamlFile.getText("UTF-8")
-        com.fasterxml.jackson.databind.ObjectMapper yamlReader =
-                new com.fasterxml.jackson.databind.ObjectMapper(
-                        new com.fasterxml.jackson.dataformat.yaml.YAMLFactory());
-        Object obj = yamlReader.readValue(yamlString, Object.class);
-        com.fasterxml.jackson.databind.ObjectMapper jsonWriter = new com.fasterxml.jackson.databind.ObjectMapper();
+        Object obj
+        try (FileInputStream fis = new FileInputStream(yamlFile)) {
+            obj = objectMapper.readValue(fis, Object.class);
+        }
+        com.fasterxml.jackson.databind.ObjectMapper jsonWriter = new com.fasterxml.jackson.databind.ObjectMapper(); //JSON ONLY
         jsonWriter.writerWithDefaultPrettyPrinter().writeValueAsString(obj);
     }
 
@@ -51,5 +64,8 @@ class AdmPushTask extends AbstractAdmTask {
     protected void handleResposne(Supplier<String> response) {
         newDomainId = new JsonSlurper().parseText(response.get()).domainId
         logger.lifecycle("Domain successfully pushed to ${getUrl()}. Server returned new id ${newDomainId}")
+    }
+    protected String getServiceName() {
+        return "ADM "+getRequestMethod();
     }
 }

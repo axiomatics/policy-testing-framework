@@ -42,4 +42,7 @@ class AdmPullTask extends AbstractAdmTask {
             writer.write(response.get())}
         logger.lifecycle("Domain ${getUrl()} stored to ${domainFile.getAbsolutePath()}")
     }
+    protected String getServiceName() {
+        return "ADM "+getRequestMethod();
+    }
 }
