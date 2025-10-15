@@ -1,1 +1,0 @@
-Any additional files put here will be made available to ADS or CAQ. It may for example be extra truststores needed.

@@ -1,8 +1,0 @@
-namespace acme {
-
-    policyset Main {
-        apply firstApplicable
-        managers.Managers
-        consultants.Consultants
-    }
-}
