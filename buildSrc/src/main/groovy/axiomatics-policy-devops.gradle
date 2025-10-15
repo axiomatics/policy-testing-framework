@@ -1,0 +1,269 @@
+import extra.MyLogger
+import org.gradle.api.GradleException
+
+def prefix = "http://axiomatics.com/alfa/identifier/"
+
+def myErrOut = new ByteArrayOutputStream();
+def BUILD_ALFA_DEPENDENCIES = project.rootProject.file("build/alfa/dependencies")
+rootProject.plugins.apply('java')
+repositories {
+    def offlineLib = rootProject.projectDir.toPath().resolve("lib").toFile()
+    if (offlineLib.exists()) {
+        logger.debug("Running in offline mode using local repository at ${offlineLib} (2)")
+        maven {
+            url uri(offlineLib)
+        }
+    } else {
+        mavenCentral()
+        maven {
+            url "s3://axiomatics-cr-maven/release"
+            credentials(AwsCredentials) {
+                accessKey = System.env.AXIOMATICS_ACCESS_KEY_ID ?: project.findProperty('AXIOMATICS_ACCESS_KEY_ID')
+                secretKey = System.env.AXIOMATICS_SECRET_ACCESS_KEY ?: project.findProperty('AXIOMATICS_SECRET_ACCESS_KEY')
+            }
+        }
+        maven {
+            url "s3://axiomatics-customer-artifacts/releases"
+            credentials(AwsCredentials) {
+                accessKey = System.env.AXIOMATICS_ACCESS_KEY_ID ?: project.findProperty('AXIOMATICS_ACCESS_KEY_ID')
+                secretKey = System.env.AXIOMATICS_SECRET_ACCESS_KEY ?: project.findProperty('AXIOMATICS_SECRET_ACCESS_KEY')
+            }
+        }
+        //mavenLocal()
+    }
+}
+
+
+
+configurations {
+    domTool
+    alfac
+    pip
+    testImplementation.extendsFrom(pip)
+    policy
+    ads.extendsFrom(pip)
+    adsCompile
+    adsRuntimeV1.extendsFrom(pip)
+    adsRuntimeV2
+}
+
+
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 4, 'hours'
+}
+
+
+dependencies {
+
+    // The following 4 libs are needed because our PIPs decleare them as providedByHost and thus we need to manually
+    // include them.
+    implementation ("jakarta.xml.bind:jakarta.xml.bind-api:2.3.3")
+    implementation ("javax.activation:activation:1.1.1")
+    implementation("org.glassfish.jaxb:jaxb-runtime:2.4.0-b180830.0438")
+    implementation("javax.xml.bind:jaxb-api:2.4.0-b180830.0359")
+
+    testImplementation(platform("org.junit:junit-bom:5.13.4"))
+    testImplementation('org.junit.jupiter:junit-jupiter')
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testRuntimeOnly 'ch.qos.logback:logback-classic:1.2.13'
+    testImplementation group: 'org.hamcrest', name: 'hamcrest', version: '3.0'
+    testImplementation "com.axiomatics.alfa.test:axiomatics-policy-devops-bundle:1.0.57-SNAPSHOT"
+
+    domTool(group: 'com.axiomatics.domtool', name: 'domtool', version: '0.10.1')
+    domTool(group: 'com.axiomatics.domtool', name: 'domtool-lib', version: '0.10.1')
+
+    adsCompile "com.axiomatics.access-decision-service:ads-service:2.1.1"
+
+    adsRuntimeV1 "com.axiomatics.access-decision-service:access-decision-service:1.17.1"
+    adsRuntimeV2 "com.axiomatics:access-decision-service:2.1.1"
+
+    pip "com.axiomatics.attribute-connectors.http:http-attribute-connector:5.4.0@jar"
+    pip "com.axiomatics.attribute-connectors.parser:parser-attribute-connectors:1.0.3@jar"
+    pip "com.axiomatics.attribute-connectors.sql:sql-attribute-connector:6.3.0@jar"
+    pip "com.axiomatics.attribute-connectors.ldap:ldap-attribute-connector:6.3.1@jar"
+    pip "com.axiomatics.attribute-connectors.table:table-attribute-connector:7.1.0@jar"
+
+    alfac "com.axiomatics.alfa:alfac:1.5.2"
+}
+
+task compileAlfaToPackage(type: JavaExec) {
+    doFirst {
+
+        def dir = "${projectDir}/${project.extensions.alfa.srcDir}"
+        logger.info("Compiling to package from ${dir}")
+        if (!new File(dir).isDirectory()) {
+            throw new GradleException("alfa.srcDir is not set or does not exist: ${new File(dir).getAbsolutePath()}")
+        }
+        myErrOut = new MyLogger();
+        errorOutput myErrOut
+        workingDir dir
+        def outFile = "${buildDir}/alfa/domain/package/policy_package.zip"
+        logger.info("Writing package to package ${outFile}")
+        args "alfaSpecifications",
+                '-p', "${outFile}",
+                '-m', "${project.extensions.alfa.mainpolicy}"
+    }
+    mainClass = "com.axiomatics.alfa.cli.Main"
+    group = "axiomatics"
+    classpath = project.configurations.alfac
+    jvmArgs "--illegal-access=permit"
+    doLast {
+        println myErrOut.flush()
+    }
+}
+
+task stageAlfaDependencies(type: Sync) {
+    logger.info("Staging from ${configurations.policy} to ${BUILD_ALFA_DEPENDENCIES}")
+    from configurations.policy
+    into "${BUILD_ALFA_DEPENDENCIES}"
+}
+project.tasks.withType(Test) {
+    logger.info("Configuring test task ${it.name}")
+    it.dependsOn stageAlfaDependencies
+    it.environment.put("ALFA_RESOLVED_DIR", "${BUILD_ALFA_DEPENDENCIES}")
+}
+
+task prepareDirs {
+    mkdir "${buildDir}/alfa/domain/package"
+    mkdir "${buildDir}/alfa/domain/ads"
+}
+task stageDeploymentDescriptor(type: Copy) {
+    into "${buildDir}/alfa/domain/ads/"
+}
+
+tasks.register('copyLicenses', Copy) {
+    from("$rootDir/license")
+    into("$buildDir/alfa/domain/ads")
+}
+
+task runAds(type: JavaExec) {
+    doFirst {
+        myErrOut = new MyLogger();
+        errorOutput myErrOut
+        logger.info("Starting ADS from ${workingDir}.")
+    }
+    group = "axiomatics"
+    classpath = project.configurations.adsRuntimeV2
+
+    workingDir "${buildDir}/alfa/domain/ads/"
+    ignoreExitValue true
+
+    doLast {
+        println myErrOut.flush()
+    }
+}
+
+task runAdsV1(type: JavaExec) {
+    doFirst {
+        myErrOut = new MyLogger();
+        errorOutput myErrOut
+        logger.info("Starting ADS from ${workingDir}.")
+    }
+    group = "axiomatics"
+    classpath = project.configurations.adsRuntimeV1
+    workingDir "${buildDir}/alfa/domain/ads/"
+    mainClass = "com.axiomatics.ads.App"
+    ignoreExitValue true
+    args 'server', "deployment.yaml"
+    doLast {
+        println myErrOut.flush()
+    }
+}
+
+task stageAdsFiles {}
+task buildAdsDockerImage {
+    group = "axiomatics"
+}
+
+task stageResourcesForAds(type: Copy) {
+    into "${buildDir}/alfa/domain/ads/"
+    from 'src/extra'
+}
+
+task stageLibsForAds2(type: Copy) {
+    into "${buildDir}/alfa/domain/ads/"
+    from 'src/extra'
+}
+
+task stagePipsInLibFolderForAds2(type: Copy) {
+    into "${buildDir}/alfa/domain/ads/lib"
+    from configurations.pip
+}
+
+task readGitCommitInfo {
+    def final  String  UNKNOWN = "unknown"
+    def final File versionFile =  project.buildDir.toPath().resolve("repositoryAndVersion").toFile()
+    def commit = null
+    def grgit = null
+    def repoAndCommit
+
+    try {
+        grgit = org.ajoberstar.grgit.Grgit.open(currentDir: project.rootDir)
+        commit = grgit.head()
+        def name = grgit.repository.rootDir.getParentFile().getName()
+        repoAndCommit = name + "-" + commit.abbreviatedId
+        logger.info("Git repo successfully loaded")
+    } catch (IllegalStateException e) {
+        repoAndCommit = "na-"+System.currentTimeMillis()
+        logger.debug("Cannot open git. Not in a git project?",e)
+    }
+    outputs.upToDateWhen {
+        def upToDateValue = repoAndCommit
+        def oldValue = versionFile.canRead() ? versionFile.getText("utf-8") : null
+        boolean upToDate =  upToDateValue.equals(oldValue)
+
+        logger.info("New : ${upToDateValue}, Old: ${oldValue}, readGitCommitInfo upToDate  ${upToDate}")
+        return upToDate
+
+    }
+
+    doLast {
+        logger.info("Executing readGitCommitInfo")
+        try {
+            if (grgit != null) {
+
+                def author = commit.author.name + " <" + commit.author.email + ">"
+                def message = commit.shortMessage
+                if (project.extensions.alfa.domainIdentity == null) {
+                    logger.info("setting id to " + repoAndCommit + " in alfa extension")
+                    project.extensions.alfa.domainIdentity = repoAndCommit
+                }
+                project.extensions.alfa.metadata.put("Author", author)
+                project.extensions.alfa.metadata.put("Commit-Message", message)
+                versionFile.write(repoAndCommit, "UTF-8")
+                logger.info("Wrote build/info file and populated extension metadatamap with id "+ repoAndCommit)
+            } else  {
+                logger.info("No git present, wrote id UNKNOWN to build/version and set in extension")
+                versionFile.write(UNKNOWN, "UTF-8")
+                if (project.extensions.alfa.domainIdentity == null) {
+                    project.extensions.alfa.domainIdentity =UNKNOWN
+                }
+            }
+        } catch (IllegalStateException e) {
+            versionFile.write(UNKNOWN, "UTF-8")
+            if (project.extensions.alfa.domainIdentity == null) {
+                project.extensions.alfa.domainIdentity = UNKNOWN
+            }
+            logger.info("Cannot read commit, exception occured. Wrote UNKNOWN to build/version file and set in extension",e)
+        }
+    }
+}
+
+stageAdsFiles.dependsOn stageDeploymentDescriptor
+stageAdsFiles.dependsOn stageResourcesForAds
+stageAdsFiles.dependsOn copyLicenses
+
+runAds.dependsOn stageAdsFiles
+runAds.dependsOn stageLibsForAds2
+runAds.dependsOn stagePipsInLibFolderForAds2
+
+runAdsV1.dependsOn stageAdsFiles
+
+rootProject.plugins.apply(AlfaPlugin)
+
+
+
+
+
+
+

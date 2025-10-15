@@ -1,0 +1,20 @@
+user.identity:
+  xacmlId: user.identity
+  category: AccessSubject
+  datatype: string
+user.role:
+  xacmlId: user.role
+  category: AccessSubject
+  datatype: string
+user.location:
+  xacmlId: user.location
+  category: AccessSubject
+  datatype: string
+resource.identity:
+  xacmlId: resource.identity
+  category: Resource
+  datatype: string
+resource.location:
+  xacmlId: resource.location
+  category: Resource
+  datatype: string

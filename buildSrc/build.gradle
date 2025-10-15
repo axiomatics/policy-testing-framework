@@ -1,0 +1,54 @@
+plugins {
+    id 'groovy-gradle-plugin'
+}
+
+        apply from: 'loadProps.gradle'
+
+        def envAccessKey = System.env.AXIOMATICS_ACCESS_KEY_ID ?: project.findProperty('AXIOMATICS_ACCESS_KEY_ID')
+        def envSecretKey = System.env.AXIOMATICS_SECRET_ACCESS_KEY ?: project.findProperty('AXIOMATICS_SECRET_ACCESS_KEY')
+        if (envAccessKey == null || envSecretKey == null ||
+        envAccessKey.equals("Put the key id provided by Axiomatics here!") ||
+                envSecretKey.equals("Put the secret key provided by Axiomatics here!")
+        ) {
+        def msg = "Credential to Axiomatics repository not set. Please set credentials provided by Axiomatics in file gradle.properties or as environment variables. " +
+                "If you have not received the credentials, contact your Axiomatics support"
+        println msg
+        throw new GradleException(msg)
+        }
+
+repositories {
+     def offlineLib = rootProject.projectDir.toPath().resolve("../lib").toFile()
+     if (offlineLib.exists()) {
+          logger.debug("Running in offline mode using local repository at ${offlineLib} (3)")
+          maven {
+               url uri(offlineLib)
+           }
+     } else {
+        gradlePluginPortal()
+        maven {
+            url "s3://axiomatics-cr-maven/release"
+            credentials(AwsCredentials) {
+                accessKey =  envAccessKey
+                secretKey = envSecretKey
+            }
+        }
+        maven {
+            url "s3://axiomatics-customer-artifacts/releases"
+            credentials(AwsCredentials) {
+                accessKey = envAccessKey
+                secretKey = envSecretKey
+            }
+        }
+        mavenCentral()
+     } //!offline
+}
+dependencies {
+    implementation "com.axiomatics.alfa:alfac:1.5.2"
+    implementation(group: 'com.axiomatics.domtool', name: 'domtool', version: '0.10.1')
+    implementation(group: 'info.picocli', name: 'picocli', version: '4.7.1')
+    implementation(group: 'com.axiomatics.domtool', name: 'domtool-lib', version: '0.10.1')
+    implementation "com.palantir.gradle.docker:gradle-docker:0.37.0"
+    implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.20.0"
+    implementation 'org.apache.httpcomponents:httpclient:4.5.14'
+    implementation 'org.ajoberstar.grgit:grgit-core:5.2.2'
+}
